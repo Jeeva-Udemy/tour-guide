@@ -1037,7 +1037,7 @@ function renderHist(){var L=live().filter(function(t){return t.status==='done'})
 
 
 // ================= community places: suggest a place · admin review · shared places =================
-var BACKEND_URL=''; // paste the Apps Script Web app URL (ends with /exec) — see Code.gs
+var BACKEND_URL='https://script.google.com/macros/s/AKfycbw_cofqrhyEadASlZ0YinwQ1ybm3WxKSagILkJAF1w97C7Rkm5Bo0f6wq_fYZ4hi9Wr/exec'; // paste the Apps Script Web app URL (ends with /exec) — see Code.gs
 var CATS=['viewpoint','waterfall','lake','dam','temple','church','mosque','fort / heritage','museum','park / garden','beach','trek / hill','forest / wildlife','boating','food spot','other'];
 function burl(){return (ls('gburl')||BACKEND_URL||'').trim()}
 function dimg(id,w){return 'https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w'+(w||1000)}
