@@ -812,7 +812,7 @@ initRegion();listSaved();attr();renderList();updTrkBtn();
 if(!online())say('You are offline. Open a trip from the Trip tab, or a saved destination from ⋯ → Saved offline.');
 
 // ================= account, trips, history & Google Drive backup =================
-var GOOGLE_CLIENT_ID=''; // optional: paste your Google OAuth Client ID here (or enter it on the sign-in screen)
+var GOOGLE_CLIENT_ID='733708707483-7vesm043nia6pi4i903j8ci6ir4828sk.apps.googleusercontent.com'; // optional: paste your Google OAuth Client ID here (or enter it on the sign-in screen)
 var SCOPES='openid email profile https://www.googleapis.com/auth/drive.appdata',DRIVE_SCOPE='https://www.googleapis.com/auth/drive.appdata',SYNC_FILE='tour-guide-data.json';
 function ls(k,v){try{if(v===undefined){var x=localStorage.getItem(k);return x==null?null:JSON.parse(x)}if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 var sess=ls('sess'),UID='guest',TR={},curTab='map';
