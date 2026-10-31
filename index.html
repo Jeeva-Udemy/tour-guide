@@ -68,6 +68,28 @@ body.nomap #toast{bottom:calc(var(--nav) + 14px);left:50%}
 button:has(>.ic){display:inline-flex;align-items:center;justify-content:center;gap:6px}
 #zoom .ic{width:22px;height:22px}
 textarea{width:100%;resize:vertical;min-height:70px}
+#topbar{position:fixed;left:0;right:0;top:0;height:3px;z-index:80;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .25s}
+#topbar.on{opacity:1}#topbar::before{content:'';position:absolute;top:0;bottom:0;width:38%;background:var(--ac);border-radius:3px;animation:tbar 1.1s ease-in-out infinite}
+@keyframes tbar{0%{left:-38%}100%{left:100%}}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+button.busy{pointer-events:none;opacity:.9;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.sk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.sk i,.skph,.skl{display:block;border-radius:6px;background:linear-gradient(90deg,var(--bd) 25%,var(--map) 50%,var(--bd) 75%);background-size:200% 100%;animation:shim 1.2s linear infinite}
+.skph{width:200px;height:150px;border-radius:8px;flex:none}.skl{height:12px;margin:8px 0}
+@keyframes shim{to{background-position:-200% 0}}
+.srcs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.src{font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--bd);display:inline-flex;gap:5px;align-items:center;color:var(--mu)}
+.src.ok{color:var(--tx);border-color:var(--ac)}.src.no{opacity:.55}.src .spin{width:11px;height:11px;border-width:1.5px}
+#daybar{display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;scrollbar-width:none}
+#daybar button{flex:none;min-height:34px;font-size:13px;padding:4px 12px;border-radius:99px;display:inline-flex;align-items:center;gap:6px}
+#daybar button.on{background:var(--tx);color:var(--bg);border-color:var(--tx);outline:none}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dayh{display:flex;align-items:center;gap:8px;margin:14px 2px 6px;font-size:14px;line-height:1.3}.dayh b{font-size:15px}.dayh .mu{margin-left:auto;text-align:right}
+.dayh .warn{color:#e5534b}
+.dsel{min-height:30px;font-size:12px;padding:2px 6px;margin-top:6px;max-width:100%}
+.it{transition:transform .12s,border-color .12s}.it:active{transform:scale(.985)}
+.fadein{animation:fi .25s ease-out}@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 #addp{position:absolute;left:8px;bottom:26px;z-index:4;box-shadow:0 2px 8px #0005;font-weight:600;border-radius:22px;padding:8px 14px}
 #mapw:has(#nav:not([hidden])) #addp{bottom:96px}#mapw:has(#pinbar:not([hidden])) #addp{display:none}
 #pinbar{position:absolute;left:8px;right:62px;bottom:10px;z-index:4;background:var(--card);border:1px solid var(--bd);border-left:5px solid #e53935;border-radius:12px;padding:9px 10px;font-size:14px;box-shadow:0 2px 10px #0005}
@@ -107,6 +129,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
 </style>
 </head>
 <body>
+<div id="topbar"></div>
 <div id="app" class="peek">
  <div id="mapw"><svg id="svg"></svg><div id="attr"></div>
   <div id="nav" hidden></div><button id="addp" title="Suggest a missing tourist place"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.6a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.6"/></svg> Add place</button><div id="pinbar" hidden></div>
@@ -125,7 +148,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
   </div>
  </div>
  <div id="sheet"><div id="grab"><i></i></div><div id="body">
-  <div id="tripbar" hidden></div>
+  <div id="tripbar" hidden></div><div id="daybar" hidden></div>
   <div id="msg">Plan a trip in the Trip tab, or enter a Start and Destination above and tap Go.</div>
   <div id="tabs"><button id="tA" class="tab on">To visit</button><button id="tV" class="tab">Visited</button><button id="tP" class="tab" title="Pick only the places you want to visit"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8 12.2 2.8 2.8L16.2 9"/></svg> Choose</button></div>
   <div id="detail" hidden></div><div id="items"></div><div id="vlist" hidden></div><div id="plist" hidden></div></div></div>
@@ -310,7 +333,18 @@ function updateTiles(){
  for(var x=x0;x<=x1;x++)for(var y=y0;y<=y1;y++){var k=zt+'/'+x+'/'+y;want[k]=1;if(!tcache[k])tcache[k]=addTile(L,zt,x,y,size)}
  for(var k2 in tcache)if(!want[k2])rmTile(k2);
 }
-function schedTiles(){clearTimeout(tt);tt=setTimeout(updateTiles,120)}
+function schedTiles(){if(tt)return;tt=setTimeout(function(){tt=0;updateTiles()},80)}
+var rafD=0;function reqDraw(){if(rafD)return;rafD=requestAnimationFrame(function(){rafD=0;draw()})}
+function panView(){svg.setAttribute('viewBox',vb.x+' '+vb.y+' '+vb.w+' '+vb.h);schedTiles()}
+
+// ---------- loading indicators ----------
+var BUSY=0;
+function busyOn(){BUSY++;$('topbar').classList.add('on')}
+function busyOff(){BUSY=Math.max(0,BUSY-1);if(!BUSY)$('topbar').classList.remove('on')}
+function btnBusy(b,on,txt){if(!b)return;if(on){if(b._t==null)b._t=b.innerHTML;b.classList.add('busy');b.innerHTML='<span class="spin"></span>'+(txt?' '+txt:'')}else if(b._t!=null){b.classList.remove('busy');b.innerHTML=b._t;b._t=null}}
+function skel(n){var h='';for(var i=0;i<(n||4);i++)h+='<div class="sk"><i style="width:30px;height:30px;border-radius:50%;flex:none"></i><div style="flex:1"><i style="width:'+(45+((i*17)%35))+'%;height:14px"></i><i style="width:30%;height:11px;margin-top:9px"></i></div></div>';return h}
+var SRCN={cache:'Saved results',tt:'TomTom',wiki:'Wikipedia',osm:'OpenStreetMap'};
+function srcHtml(S){return '<div class="srcs">'+Object.keys(S).map(function(k){var v=S[k];return '<span class="src '+(v==='ok'?'ok':v==='no'?'no':'')+'">'+(v==='wait'?'<span class="spin"></span>':v==='ok'?'&#10003;':'&#8211;')+' '+SRCN[k]+'</span>'}).join('')+'</div>'}
 
 // ---------- routing (cached per leg so it works offline) ----------
 var RH={car:['https://routing.openstreetmap.de/routed-car','https://router.project-osrm.org'],bike:['https://routing.openstreetmap.de/routed-bike'],foot:['https://routing.openstreetmap.de/routed-foot']};
@@ -371,25 +405,46 @@ function wikiPlaces(lat,lng,R){
   .then(function(j){return ((j.query&&j.query.geosearch)||[]).filter(function(g){return (g.type?WT[g.type]:true)&&!BAD.test(g.title)&&g.dist>300})
    .map(function(g){return {n:g.title.replace(/\s*\(.*\)$/,''),a:g.lat,o:g.lon,t:g.type&&g.type!=='landmark'?g.type:'attraction',d:hav(lat,lng,g.lat,g.lon)}})})
   .catch(function(){return []})}
-var partial=false;
-function fetchPlaces(lat,lng,R){var key='pl:'+lat.toFixed(4)+','+lng.toFixed(4)+':'+R;partial=false;
+var partial=false,PLACE_TTL=7*864e5;
+function pkey(lat,lng,R){return 'pl2:'+lat.toFixed(2)+','+lng.toFixed(2)+':'+R}
+function mergeP(lists){var out=[];lists.forEach(function(L){(L||[]).forEach(function(p){var ln=p.n.toLowerCase();if(!out.some(function(q){return q.n.toLowerCase()===ln||hav(q.a,q.o,p.a,p.o)<0.15}))out.push(p)})});
+ out.sort(function(a,b){return a.d-b.d});return out.slice(0,40)}
+function osmPlaces(lat,lng,R){
  var f=['["tourism"~"attraction|viewpoint|museum|zoo|theme_park|gallery|aquarium"]','["historic"~"monument|castle|fort|memorial|archaeological_site|ruins"]','["natural"~"waterfall|peak|cave_entrance|beach"]','["leisure"~"garden|nature_reserve|park"]["name"]','["amenity"="place_of_worship"]["tourism"]'];
  var q='[out:json][timeout:25];('+f.map(function(x){return 'nwr'+x+'(around:'+R+','+lat+','+lng+');'}).join('')+');out center 150;';
- var ov=overpass(q).then(function(j){var seen={},out=[];
+ return overpass(q).then(function(j){var seen={},out=[];
   j.elements.forEach(function(e){var t=e.tags||{},n=t['name:en']||t.name,a=e.lat||(e.center&&e.center.lat),o=e.lon||(e.center&&e.center.lon);
    if(!n||a==null||seen[n])return;seen[n]=1;
    out.push({n:n,a:a,o:o,t:(t.tourism||t.historic||t.natural||t.leisure||'place').replace(/_/g,' '),d:hav(lat,lng,a,o)})});
-  return out},function(){return null});
- return Promise.all([ov,wikiPlaces(lat,lng,R),ttPlaces(lat,lng,R)]).then(function(r){var o=r[0],w=r[2].concat(r[1]);
-  if(!o)return get('r',key).then(function(c){if(c)return c;
-   if(!w.length)throw 'Could not load tourist places right now (OpenStreetMap and Wikipedia did not answer). Check your internet and tap Go again.';
-   partial=true;w.sort(function(a,b){return a.d-b.d});return w.slice(0,40)});
-  var out=o.slice();
-  w.forEach(function(p){var ln=p.n.toLowerCase();if(!out.some(function(q){return q.n.toLowerCase()===ln||hav(q.a,q.o,p.a,p.o)<0.15}))out.push(p)});
-  out.sort(function(a,b){return a.d-b.d});out=out.slice(0,40);put('r',key,out);return out});
-}
+  return out},function(){return null})}
+function remoteCache(key){if(!window.burl||!burl()||!online())return Promise.resolve(null);
+ return fj(burl()+'?action=cache&k='+encodeURIComponent(key),{},6000).then(function(j){return j&&j.ok&&j.list&&j.list.length&&Date.now()-j.t<PLACE_TTL?j.list:null}).catch(function(){return null})}
+function pushCache(key,list){if(!window.burl||!burl()||!sess||sess.guest||!tokValid())return;api('putCache',{k:key,list:list}).catch(function(){})}
+// all sources at once; the list grows as each answers. OpenStreetMap is slowest: once the others are in, it gets ~12 s more.
+function livePlaces(lat,lng,R,S,prog){var L={osm:null,tt:null,wiki:null},t0=Date.now(),useTT=ttOn();
+ S.osm='wait';S.wiki='wait';if(useTT)S.tt='wait';prog({src:S,list:[]});
+ return new Promise(function(res,rej){var fin=false,pend=useTT?3:2,timer=0;
+  function cur(){return mergeP([L.osm,L.tt,L.wiki])}
+  function end(complete){if(fin)return;fin=true;clearTimeout(timer);var list=cur();
+   if(!list.length)rej('Could not load tourist places right now. Check your internet and try again.');else res({list:list,complete:complete})}
+  function got(k,v){if(fin)return;L[k]=v;S[k]=v?'ok':'no';pend--;prog({src:S,list:cur()});
+   if(!pend)end(!!L.osm);
+   else if(pend===1&&S.osm==='wait'&&cur().length){clearTimeout(timer);timer=setTimeout(function(){S.osm='no';prog({src:S,list:cur()});end(false)},Math.max(2500,12000-(Date.now()-t0)))}}
+  osmPlaces(lat,lng,R).then(function(v){got('osm',v)});
+  wikiPlaces(lat,lng,R).then(function(v){got('wiki',v||[])},function(){got('wiki',[])});
+  if(useTT)ttPlaces(lat,lng,R).then(function(v){got('tt',v||[])},function(){got('tt',[])})})}
+function fetchPlaces(lat,lng,R,prog){partial=false;prog=prog||function(){};var key=pkey(lat,lng,R);
+ return get('r',key).then(function(c){
+  if(c&&c.list&&Date.now()-c.t<PLACE_TTL){prog({src:{cache:'ok'},list:c.list});return c.list}
+  var S={};if(window.burl&&burl()){S.cache='wait';prog({src:S,list:[]})}
+  return remoteCache(key).then(function(rc){
+   if(rc){S.cache='ok';prog({src:S,list:rc});put('r',key,{t:Date.now(),list:rc});return rc}
+   delete S.cache;
+   return livePlaces(lat,lng,R,S,prog).then(function(r){
+    if(r.complete){put('r',key,{t:Date.now(),list:r.list});pushCache(key,r.list)}else partial=true;return r.list},
+    function(e){if(c&&c.list){partial=true;return c.list}throw e})})})}
 function load(d){
- viewed=d.viewed||(d.viewed={});
+ viewed=d.viewed||(d.viewed={});dayF=-1;
  OX=rx(d.lng);OY=ry(d.lat);clearTiles();dest=d;places=d.places;route=d.route||null;Object.assign(det,d.det||{});tour=null;tourSig='';trk.rr=null;closeDetail();
  var st={n:'Start ('+d.name+')',a:d.lat,o:d.lng},f=d.from;
  if(f&&hav(f.lat,f.lng,d.lat,d.lng)<=Math.max(4,(+$('rad').value)/1000))st={n:f.name,a:f.lat,o:f.lng};
@@ -480,19 +535,48 @@ function updDist(force){if(!dest||!start||!places.length)return false;
  return true}
 
 // ---------- ordering, tour route & drawing ----------
-function compute(){
- var left=active().slice(),cur=start,res=[]; // numbering is fixed for the whole trip; visited places keep their number
- while(left.length){var bi=0,bd=1e9;
-  left.forEach(function(p,i){var d=hav(cur.a,cur.o,p.a,p.o);if(d<bd){bd=d;bi=i}});
-  var p=left.splice(bi,1)[0];res.push({p:p,leg:bd});cur=p}
- order=res;
-}
+// ---------- days: split the places over the trip dates (auto), with manual moves kept per place ----------
+var DC=['#1a73e8','#e8710a','#188038','#a142f4','#d01884','#12b5cb','#c5221f','#9334e6','#b06000','#5f6368','#0b8043','#3f51b5','#795548','#ad1457'],dayF=-1;
+function nDays(t){if(!t||!t.dFrom||!t.dTo)return 1;var n=Math.round((Date.parse(t.dTo)-Date.parse(t.dFrom))/864e5)+1;return Math.max(1,Math.min(14,n||1))}
+function dayCol(d){return DC[d%DC.length]}
+function dayDate(d){if(!dest||!dest.dFrom)return '';var x=new Date(dest.dFrom+'T00:00');x.setDate(x.getDate()+d);return x.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'})}
+function dwell(p){var t=((p.t||'')+' '+p.n).toLowerCase();
+ return /museum|gallery|palace|fort|castle|zoo|theme park|aquarium/.test(t)?90:/garden|botanical|park|lake|boat|beach|falls|waterfall|dam/.test(t)?60:/view|peak|point|monument|memorial/.test(t)?30:/temple|church|mosque|worship|shrine/.test(t)?40:45}
+function nnOrder(list,from){var left=list.slice(),cur=from,res=[];
+ while(left.length){var bi=0,bd=1e9;left.forEach(function(p,i){var d=hav(cur.a,cur.o,p.a,p.o);if(d<bd){bd=d;bi=i}});var p=left.splice(bi,1)[0];res.push({p:p,leg:bd});cur=p}return res}
+// split a route into k consecutive days so the busiest day is as light as possible
+function partition(cost,k){var n=cost.length,day=new Array(n),i,j,x;if(k>=n){for(i=0;i<n;i++)day[i]=i;return day}
+ var pre=[0];cost.forEach(function(c){pre.push(pre[pre.length-1]+c)});var M=[],D=[];for(i=0;i<=n;i++){M.push([]);D.push([])}
+ for(i=1;i<=n;i++)M[i][1]=pre[i];for(j=2;j<=k;j++)M[1][j]=pre[1];
+ for(i=2;i<=n;i++)for(j=2;j<=k;j++){var best=Infinity,bx=1;for(x=1;x<i;x++){var v=Math.max(M[x][j-1],pre[i]-pre[x]);if(v<best){best=v;bx=x}}M[i][j]=best;D[i][j]=bx}
+ i=n;j=k;while(j>0&&i>0){x=(j===1||i===1)?0:D[i][j];for(var q=x;q<i;q++)day[q]=j-1;i=x;j--}return day}
+function compute(){var A=active(),nd=nDays(dest),res=nnOrder(A,start); // numbering is fixed for the whole trip; visited places keep their number
+ if(nd<2){res.forEach(function(o){o.day=0});order=res;return}
+ var auto=partition(res.map(function(o){return dwell(o.p)+o.leg*1.4/30*60}),nd),man=dest.days||{},G=[],out=[],cur=start,d;
+ for(d=0;d<nd;d++)G.push([]);
+ res.forEach(function(o,i){var m=man[vk(o.p)];G[(m!=null&&m<nd)?m:auto[i]].push(o.p)});
+ G.forEach(function(g,d){var r=nnOrder(g,cur);r.forEach(function(o){o.day=d;out.push(o)});if(r.length)cur=r[r.length-1].p});order=out}
+function dayStats(d){var n=0,v=0,mn=0,dr=0;order.forEach(function(o,i){if(o.day!==d)return;n++;if(isV(o.p))v++;var l=tour&&tour.legs[i],t=l&&!l.straight?l.min:o.leg*1.4/30*60;dr+=t;mn+=t+dwell(o.p)});return {n:n,v:v,min:mn,drive:dr}}
+function setDay(p,d){var k=vk(p),prev=(dest.days||{})[k];dest.days=dest.days||{};dest.days[k]=d;saveTrip(dest);selected=-1;closeDetail();render();
+ toast('Moved \u201c'+p.n+'\u201d to Day '+(d+1),'Undo',function(){if(prev==null)delete dest.days[k];else dest.days[k]=prev;saveTrip(dest);render()},6000)}
+function daySelect(p,d,nd){var s=document.createElement('select');s.className='dsel';s.setAttribute('aria-label','Day for '+p.n);
+ for(var i=0;i<nd;i++){var o=document.createElement('option');o.value=i;o.textContent='Day '+(i+1)+' \u00b7 '+dayDate(i);s.appendChild(o)}s.value=d;
+ s.onclick=function(e){e.stopPropagation()};s.onchange=function(e){e.stopPropagation();setDay(p,+s.value)};return s}
+function fitPts(P){if(!P.length)return;var xs=P.map(function(p){return mx(p.o)}),ys=P.map(function(p){return my(p.a)});
+ var x0=Math.min.apply(0,xs),x1=Math.max.apply(0,xs),y0=Math.min.apply(0,ys),y1=Math.max.apply(0,ys),pad=80,w=Math.max(x1-x0,200)+2*pad,h=Math.max(y1-y0,200)+2*pad,r=svg.clientWidth/Math.max(svg.clientHeight,1);
+ if(w/h<r)w=h*r;else h=w/r;vb={x:(x0+x1)/2-w/2,y:(y0+y1)/2-h/2,w:w,h:h}}
+function showDay(d){dayF=d;selected=-1;closeDetail();if(d<0)fit();else fitPts(order.filter(function(o){return o.day===d}).map(function(o){return o.p}));draw();renderList()}
+function renderDaybar(){var b=$('daybar'),nd=nDays(dest);if(!dest||nd<2||!order.length){b.hidden=true;return}b.hidden=false;b.innerHTML='';
+ function pill(lbl,d,col){var x=document.createElement('button');x.className=dayF===d?'on':'';x.innerHTML=(col?'<span class="dot" style="background:'+col+'"></span>':'')+lbl;x.onclick=function(){showDay(d)};b.appendChild(x)}
+ pill('All '+nd+' days',-1);for(var d=0;d<nd;d++){var st=dayStats(d);pill('Day '+(d+1)+(st.n?' \u00b7 '+st.n:''),d,dayCol(d))}
+ if(dest.days&&Object.keys(dest.days).length){var a=document.createElement('button');a.textContent='\u21ba Auto-plan';a.title='Split the places over the days automatically again';
+  a.onclick=function(){var keep=dest.days;dest.days={};saveTrip(dest);render();toast('Days planned automatically','Undo',function(){dest.days=keep;saveTrip(dest);render()},6000)};b.appendChild(a)}}
 function tourPts(){return [[start.a,start.o]].concat(order.map(function(o){return [o.p.a,o.p.o]}))}
 function buildTour(){var seq=++tourSeq;if(!start||!order.length){tour=null;return Promise.resolve()}
- var pts=tourPts();
- return routeLegs('car',pts).then(function(L){if(seq!==tourSeq)return;
+ var pts=tourPts();busyOn();
+ return routeLegs('car',pts).then(function(L){busyOff();if(seq!==tourSeq)return;
   tour={legs:L.map(function(l,i){return l||{pts:[pts[i],pts[i+1]],km:hav(pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1]),min:0,steps:[],straight:1}})};
-  draw();renderList();if(trk.on)navUpdate()}).catch(function(){})}
+  draw();renderList();if(trk.on)navUpdate()}).catch(function(){busyOff()})}
 function fit(){
  var P=active().concat(start?[start]:[]);if(!P.length)return;
  var xs=P.map(function(p){return mx(p.o)}),ys=P.map(function(p){return my(p.a)});
@@ -518,8 +602,9 @@ function draw(){
    var a0=route.pts[0],ag=el('g',{},og);el('circle',{cx:mx(a0[1]),cy:my(a0[0]),r:11*s,fill:RT,stroke:'#fff','stroke-width':2*s},ag);
    el('text',{x:mx(a0[1]),y:my(a0[0])+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},ag).textContent='A'}
   // visited legs (the leg leading INTO a visited place) in grey, drawn first so the remaining blue route stays on top
-  if(tour)[true,false].forEach(function(pass){tour.legs.forEach(function(l,i){var v=!!(order[i]&&isV(order[i].p));if(v!==pass)return;var c=v?VC:RT;
-   if(l.straight)line(l.pts,c,3,s,dim?.3:.8,1,0);else line(l.pts,c,5,s,dim?.35:(v?.9:1),0,!dim)})});
+  var ND=nDays(dest),offDay=function(i){return dayF>=0&&order[i]&&order[i].day!==dayF};
+  if(tour)[true,false].forEach(function(pass){tour.legs.forEach(function(l,i){var v=!!(order[i]&&isV(order[i].p));if(v!==pass)return;var c=v?VC:(ND>1&&order[i]?dayCol(order[i].day):RT),f=offDay(i)?.22:1;
+   if(l.straight)line(l.pts,c,3,s,(dim?.3:.8)*f,1,0);else line(l.pts,c,5,s,(dim?.35:(v?.9:1))*f,0,!dim&&f===1)})});
   else{var pts=[[start.a,start.o]];order.forEach(function(o){pts.push([o.p.a,o.p.o])});line(pts,ac,2.5,s,.6,1,0)}
   legs.forEach(function(g){line(g.pts,g.c,g.dash?3.5:6,s,1,g.dash,!g.dash)});
   if(trk.on&&trk.rr&&!legs.length)line(trk.rr.P.pts,RT,5,s,1,0,1);
@@ -527,10 +612,10 @@ function draw(){
   el('circle',{cx:sx,cy:sy,r:8*s,fill:'#fff',stroke:RT,'stroke-width':4*s},og);
   // markers keep their trip number; visited ones turn grey
   var boxes=[[sx-8*s,sy-8*s,sx+8*s,sy+8*s]],LB=[];
-  order.forEach(function(o,i){var x=mx(o.p.o),y=my(o.p.a),v=isV(o.p),r=(i===selected?15:11)*s;
-   el('circle',{cx:x,cy:y,r:r,fill:v?VC:ac,stroke:'#fff','stroke-width':2*s},og);
-   el('text',{x:x,y:y+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},og).textContent=i+1;
-   boxes.push([x-r,y-r,x+r,y+r]);LB.push({x:x,y:y,r:r,t:o.p.n,v:v,i:i})});
+  order.forEach(function(o,i){var x=mx(o.p.o),y=my(o.p.a),v=isV(o.p),r=(i===selected?15:11)*s,off=offDay(i),g=el('g',{opacity:off?.3:1},og);
+   el('circle',{cx:x,cy:y,r:r,fill:v?VC:(ND>1?dayCol(o.day):ac),stroke:'#fff','stroke-width':2*s},g);
+   el('text',{x:x,y:y+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},g).textContent=i+1;
+   boxes.push([x-r,y-r,x+r,y+r]);if(!off)LB.push({x:x,y:y,r:r,t:o.p.n,v:v,i:i})});
   // a name for every marker: try right, left, above, below \u2014 pick the spot that overlaps least
   LB.sort(function(a,b){return (b.i===selected)-(a.i===selected)||a.i-b.i});
   LB.forEach(function(L){var t=L.t.length>32?L.t.slice(0,31)+'\u2026':L.t,w=t.length*6.3*s+4*s,h=13*s,g=4*s,
@@ -560,12 +645,19 @@ function render(){compute();updDist();
  var sig=start&&order.length?tourPts().map(function(p){return p[0].toFixed(5)+','+p[1].toFixed(5)}).join(';'):'';
  if(sig!==tourSig){tourSig=sig;tour=null;buildTour()}
  draw();renderList()}
+function dayHead(d){var st=dayStats(d),h=document.createElement('div');h.className='dayh';h.dataset.day=d;
+ h.innerHTML='<span class="dot" style="background:'+dayCol(d)+'"></span><div><b></b><br><span class="mu"></span></div><span class="mu"></span>';
+ h.querySelector('b').textContent='Day '+(d+1);h.querySelector('div .mu').textContent=dayDate(d);
+ var r=h.lastChild;r.textContent=!st.n?'Free day \u2014 move places here with the Day menu':st.v===st.n?'All '+st.n+' visited \u2713':st.n+' place'+(st.n>1?'s':'')+' \u00b7 ~'+fmt(st.min)+' incl. ~'+fmt(st.drive)+' travel';
+ if(st.min>600&&st.v<st.n){r.classList.add('warn');r.textContent+=' \u00b7 busy day'}return h}
 function renderList(){
  renderTripbar();
- var box=$('items');box.innerHTML='';var mixed=0,road=0,rmin=0,allRoad=!!tour,todo=0,done=0;
+ var box=$('items');box.innerHTML='';var mixed=0,road=0,rmin=0,allRoad=!!tour,todo=0,done=0,ND=nDays(dest),lastDay=-1;renderDaybar();
  order.forEach(function(o,i){var l=tour&&tour.legs[i],rd=l&&!l.straight;
   if(rd){road+=l.km;rmin+=l.min;mixed+=l.km}else{allRoad=false;mixed+=o.leg}
   if(isV(o.p)){done++;return}todo++;
+  if(ND>1&&dayF>=0&&o.day!==dayF)return;
+  if(ND>1&&o.day!==lastDay){lastDay=o.day;box.appendChild(dayHead(o.day))}
   var d=document.createElement('div');d.className='it'+(i===selected?' sel':'');
   d.innerHTML='<div class="n"></div><div><b></b><small></small><small>Tap for photos, video &amp; directions</small></div><div class="d"></div>';
   d.querySelector('.n').textContent=i+1;d.querySelector('b').textContent=o.p.n;
@@ -573,8 +665,10 @@ function renderList(){
   d.querySelector('.d').innerHTML='<b></b><br><span></span>';
   d.querySelector('.d').children[0].textContent=distTxt(o.p);
   d.querySelector('.d').children[2].textContent=(rd?l.km.toFixed(1)+' km':'\u2248 '+o.leg.toFixed(1)+' km')+' from '+(i?'#'+i:'start')+(rd?' \u00b7 '+fmt(l.min):'');
+  if(ND>1){var nc=d.querySelector('.n');nc.style.background=dayCol(o.day);d.querySelector('div:nth-child(2)').appendChild(daySelect(o.p,o.day,ND))}
   d.onclick=function(){selected=i;render();showDetail(i)};box.appendChild(d);
  });
+ if(ND>1)for(var dd=0;dd<ND;dd++){var ds=dayStats(dd);if((dayF<0||dayF===dd)&&(!ds.n||ds.v===ds.n)&&!box.querySelector('[data-day="'+dd+'"]')){var h=dayHead(dd);var ref=null;[].slice.call(box.querySelectorAll('.dayh')).some(function(e){if(+e.dataset.day>dd){ref=e;return true}});box.insertBefore(h,ref)}}
  if(order.length&&!todo)box.innerHTML='<div class="empty">All chosen places are visited \ud83c\udf89 Tap \u201c\ud83c\udfc1 Finish trip\u201d above to save this trip to History.</div>';
  $('tA').textContent='To visit ('+todo+')';$('tV').textContent='Visited ('+Object.keys(viewed).filter(inTrip).length+')';$('tP').innerHTML=IC.check+(dest&&dest.sel?' Choose ('+active().length+')':' Choose');
  if(tab==='done')renderVisited();
@@ -633,15 +727,15 @@ function showDetail(i){
  curTo=p;curRes=null;trk.follow=false;updTrkBtn();
  D.hidden=false;$('items').hidden=true;$('vlist').hidden=true;$('plist').hidden=true;$('tabs').hidden=true;D.dataset.i=i;
  if($('app').className!=='full')sheet('half');if(narrow())barMin(true);
- D.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bk">\u2190 All places</button><button class="vw p">\u2713 Mark as viewed</button></div><h3></h3><small style="color:var(--mu)"></small><div class="ph"></div><p class="tx">Loading details\u2026</p><div class="vd"></div><b>How to get there</b><div class="md"></div><div class="ds" style="font-size:13px;color:var(--mu);padding:6px 0">Finding routes\u2026</div>';
+ D.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bk">\u2190 All places</button><button class="vw p">\u2713 Mark as viewed</button></div><h3></h3><small style="color:var(--mu)"></small><div class="ph"><i class="skph"></i><i class="skph"></i></div><p class="tx"><i class="skl" style="width:92%"></i><i class="skl" style="width:80%"></i><i class="skl" style="width:55%"></i></p><div class="vd"></div><b>How to get there</b><div class="md"></div><div class="ds" style="font-size:13px;color:var(--mu);padding:6px 0"><span class="spin"></span> Finding routes\u2026</div>';
  D.querySelector('.bk').onclick=function(){selected=-1;closeDetail();render()};
  var vwb=D.querySelector('.vw');
  if(isV(p)){vwb.textContent='\u21a9 Mark as not viewed';vwb.classList.remove('p');vwb.onclick=function(){selected=-1;closeDetail();unvisit(vk(p))}}
  else vwb.onclick=function(){markViewed(p)};
  D.querySelector('h3').textContent=(i+1)+'. '+p.n;
- D.querySelector('small').textContent=p.t+' \u00b7 '+distTxt(p)+' \u00b7 '+(tl&&!tl.straight?tl.km.toFixed(1)+' km by road':order[i].leg.toFixed(1)+' km straight-line')+' from '+(i?'#'+i:'start');
+ D.querySelector('small').textContent=(nDays(dest)>1?'Day '+(order[i].day+1)+' ('+dayDate(order[i].day)+') \u00b7 ':'')+p.t+' \u00b7 '+distTxt(p)+' \u00b7 '+(tl&&!tl.straight?tl.km.toFixed(1)+' km by road':order[i].leg.toFixed(1)+' km straight-line')+' from '+(i?'#'+i:'start');
  placeInfo(p).then(function(o){
-  var ph=D.querySelector('.ph');
+  var ph=D.querySelector('.ph');ph.innerHTML='';
   o.photos.slice(0,6).forEach(function(u){var im=document.createElement('img');im.alt=p.n;blobURL('img:'+u,u).then(function(b){if(b||online()){im.src=b||u;ph.appendChild(im)}})});
   D.querySelector('.tx').textContent=o.text?o.text+'  ('+(o.credit||'Wikipedia / Wikimedia Commons')+')':(o.photos.length?'':(online()?'No photos or description found for this place.':'Details were not saved for offline use.'));
   if(online())(o.frames||[]).slice(0,2).forEach(function(id){var b=document.createElement('button');b.textContent='\u25b6 Play traveller video';b.style.marginTop='8px';
@@ -760,7 +854,7 @@ $('save').onclick=function(){
 
 // ---------- search & controls ----------
 var busy=false;
-function barMin(b){var a=$('q0').value.trim(),d=$('q').value.trim();$('cmpT').textContent=d?(a||'Start')+' \u2192 '+d:'Search a destination';$('bar').classList.toggle('min',b);if(b)$('opts').hidden=true}
+function barMin(b){var a=$('q0').value.trim(),d=$('q').value.trim();$('cmpT').textContent=d?(a?a+' \u2192 '+d:d):'Search a destination';$('bar').classList.toggle('min',b);if(b)$('opts').hidden=true}
 $('cmp').onclick=function(){barMin(false)};$('hide').onclick=function(){barMin(true)};
 function search(){
  if(busy)return;
@@ -769,12 +863,12 @@ function search(){
  note='';
  if(!online()){findSaved(q).then(function(d){if(d){note='Offline: opened your saved copy.';openSaved(d)}
   else say('You are offline. Only saved destinations open without internet \u2014 pick one from \u22ef \u2192 Saved offline.')});return}
- busy=true;$('go').disabled=true;say('Searching\u2026');
+ busy=true;btnBusy($('go'),true);busyOn();say('Searching\u2026');var keepItems=$('items').innerHTML;$('items').innerHTML=skel(4);
  var sp=(q0&&q0!=='My location')?geocode(q0):Promise.resolve(gpsPos);
  var dp=q?geocode(q):Promise.resolve({name:'Near me',lat:gpsPos.lat,lng:gpsPos.lng});
  Promise.all([dp,sp]).then(function(r){
   var d=r[0],s=r[1];say('Finding tourist places in '+d.name+'\u2026');
-  return fetchPlaces(d.lat,d.lng,+$('rad').value).then(function(p){
+  return fetchPlaces(d.lat,d.lng,+$('rad').value,function(st){$('msg').innerHTML='Finding tourist places in '+esc(d.name)+'\u2026'+srcHtml(st.src)+(st.list.length?'<span class="mu">'+st.list.length+' found so far</span>':'')}).then(function(p){
    d.places=p;d.route=null;d.from=s?{name:s.name,lat:s.lat,lng:s.lng}:null;
    if(!s||hav(s.lat,s.lng,d.lat,d.lng)<3)return d;
    say('Finding the road route\u2026');
@@ -783,7 +877,7 @@ function search(){
  }).then(function(d){d.sel=null;d=mkTrip(d,{quick:true});saveTrip(d);ls('cur:'+UID,d.id);if(partial)note='OpenStreetMap was busy, so this list may miss some places \u2014 tap Go again later for the full list.';load(d);sheet('half');if(narrow())barMin(true);if(!d.places.length)say('No tourist places found here. Try a bigger radius (\u22ef).')})
  .catch(function(e){var m=typeof e==='string'?e:'Search failed. Check your internet connection and tap Go again.';
   return findSaved(q).then(function(sd){if(sd){note=m+' Showing your saved copy.';openSaved(sd)}else say(m+(dest?' (Still showing your previous trip: '+dest.name+'.)':''))})})
- .then(function(){busy=false;$('go').disabled=false},function(){busy=false;$('go').disabled=false});
+ .then(function(){busy=false;btnBusy($('go'),false);busyOff();if($('items').querySelector('.sk'))renderList()},function(){busy=false;btnBusy($('go'),false);busyOff();renderList()});
 }
 $('go').onclick=search;$('q').onkeydown=function(e){if(e.key==='Enter')search()};$('q0').onkeydown=function(e){if(e.key==='Enter')search()};
 $('gps').onclick=function(){
@@ -797,7 +891,7 @@ $('gps').onclick=function(){
 $('saved').onchange=function(){var n=this.value;this.value='';if(!n)return;note='';
  idb('d','readonly',function(s){return s.get(n)}).then(function(d){if(d){start=null;openSaved(d)}}).catch(function(){})};
 var pk=$('pick');pk.onclick=function(){picking=!picking;pk.classList.toggle('on',picking)};
-function zoom(f,cx,cy){cx=cx==null?vb.x+vb.w/2:cx;cy=cy==null?vb.y+vb.h/2:cy;vb={x:cx-(cx-vb.x)*f,y:cy-(cy-vb.y)*f,w:vb.w*f,h:vb.h*f};draw()}
+function zoom(f,cx,cy){cx=cx==null?vb.x+vb.w/2:cx;cy=cy==null?vb.y+vb.h/2:cy;vb={x:cx-(cx-vb.x)*f,y:cy-(cy-vb.y)*f,w:vb.w*f,h:vb.h*f};panView();reqDraw()}
 $('zi').onclick=function(){zoom(.7)};$('zo').onclick=function(){zoom(1.4)};$('fit').onclick=function(){trk.follow=false;updTrkBtn();fit();draw()};
 function toMap(e){var r=svg.getBoundingClientRect();return {x:vb.x+(e.clientX-r.left)/r.width*vb.w,y:vb.y+(e.clientY-r.top)/r.height*vb.h}}
 svg.addEventListener('wheel',function(e){e.preventDefault();var m=toMap(e);zoom(e.deltaY>0?1.15:.87,m.x,m.y)},{passive:false});
@@ -806,7 +900,7 @@ svg.addEventListener('pointerdown',function(e){svg.setPointerCapture(e.pointerId
 svg.addEventListener('pointermove',function(e){
  if(!ptr[e.pointerId])return;var keys=Object.keys(ptr),r=svg.getBoundingClientRect();
  if(keys.length===1){var o=ptr[e.pointerId],dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);
-  vb.x-=dx/r.width*vb.w;vb.y-=dy/r.height*vb.h;ptr[e.pointerId]=e;if(moved>6&&trk.on&&trk.follow){trk.follow=false;updTrkBtn()}draw()}
+  vb.x-=dx/r.width*vb.w;vb.y-=dy/r.height*vb.h;ptr[e.pointerId]=e;if(moved>6&&trk.on&&trk.follow){trk.follow=false;updTrkBtn()}panView()}
  else if(keys.length===2){var a=ptr[keys[0]],b=ptr[keys[1]];ptr[e.pointerId]=e;var a2=ptr[keys[0]],b2=ptr[keys[1]],
   d0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),d1=Math.hypot(a2.clientX-b2.clientX,a2.clientY-b2.clientY);
   if(d0&&d1&&Math.abs(d1-d0)>1){var m=toMap({clientX:(a2.clientX+b2.clientX)/2,clientY:(a2.clientY+b2.clientY)/2});zoom(d0/d1,m.x,m.y);moved+=9}}
@@ -892,7 +986,7 @@ function unloadMap(keepCur){dest=null;places=[];route=null;start=null;order=[];t
  if(!keepCur)ls('cur:'+UID,null);$('detail').hidden=true;closeDetail();draw();renderList();say('Plan a trip in the Trip tab, or search a destination above.')}
 function renderTripbar(){var b=$('tripbar');if(!dest||!TR[dest.id]){b.hidden=true;return}b.hidden=false;var t=dest,done=t.status==='done';
  b.innerHTML='<span class="t"></span><button class="fin"></button>';
- b.querySelector('.t').innerHTML='<b>'+esc(title(t))+'</b><br><small>\ud83d\udcc5 '+esc(range(t))+(done?' \u00b7 \u2705 Completed':'')+'</small>';
+ b.querySelector('.t').innerHTML='<b>'+esc(title(t))+'</b><br><small>\ud83d\udcc5 '+esc(range(t))+(nDays(t)>1?' \u00b7 '+nDays(t)+' days':'')+(done?' \u00b7 \u2705 Completed':'')+'</small>';
  var f=b.querySelector('.fin');f.textContent=done?'\u21ba Reopen':'\ud83c\udfc1 Finish trip';if(!done&&order.length&&nextIdx()<0)f.className='p';
  f.onclick=function(){done?reopenTrip(t):finishTrip(t)}}
 function tripStats(t){if(dest!==t||!tour)return t.stats||null;var km=0,mn=0;tour.legs.forEach(function(l){km+=l.km;mn+=l.min||0});return {km:km,min:mn}}
@@ -1022,35 +1116,37 @@ $('tFind').onclick=function(){var s=$('tS').value.trim(),d=$('tD').value.trim(),
  if(!F||!T){M.textContent='Choose the From and To dates.';return}if(T<F){M.textContent='\u201cTo date\u201d must be on or after \u201cFrom date\u201d.';return}
  if(!d){M.textContent='Enter a destination.';return}
  if(!online()){M.textContent='Finding places needs internet. Trips you already planned are below and work offline.';return}
- var b=this;b.disabled=true;$('tRes').hidden=true;M.textContent='Finding '+d+'\u2026';TP.rp=null;
+ var b=this;btnBusy(b,true,'Finding places\u2026');busyOn();M.textContent='';TP.rp=null;TP.d=null;TP.sel={};TP.live=true;
+ $('tRes').hidden=false;$('tResH').textContent='Finding '+d+'\u2026';$('tNote').innerHTML='';$('tPb').hidden=true;$('tShow').hidden=true;$('tList').innerHTML=skel(5);
  Promise.all([geocode(d),s&&s!=='My location'?geocode(s):Promise.resolve(s==='My location'?gpsPos:null)]).then(function(r){var D=r[0],S=r[1];
-  M.textContent='Finding tourist places in '+D.name+'\u2026';
-  return fetchPlaces(D.lat,D.lng,+$('tR').value).then(function(p){D.places=p;D.route=null;D.from=S?{name:S.name,lat:S.lat,lng:S.lng}:null;TP.d=D;TP.part=partial;TP.sel={};
+  D.route=null;D.from=S?{name:S.name,lat:S.lat,lng:S.lng}:null;D.places=[];$('tResH').textContent='Finding tourist places in '+D.name+'\u2026';
+  return fetchPlaces(D.lat,D.lng,+$('tR').value,function(st){$('tNote').innerHTML=srcHtml(st.src);if(st.list.length){D.places=st.list;TP.d=D;renderTP()}}).then(function(p){D.places=p;TP.d=D;TP.part=partial;TP.live=false;
    TP.rp=S&&hav(S.lat,S.lng,D.lat,D.lng)>=3?routeLegs('car',[[S.lat,S.lng],[D.lat,D.lng]]).then(function(L){if(L[0])D.route={pts:L[0].pts,km:L[0].km,min:L[0].min,steps:L[0].steps}}).catch(function(){}):null;
-   M.textContent='';renderTP()})})
- .catch(function(e){M.textContent=typeof e==='string'?e:'Search failed. Check your connection and try again.'}).then(function(){b.disabled=false})};
-function renderTP(){var D=TP.d,box=$('tList');$('tRes').hidden=false;box.innerHTML='';
+   renderTP()})})
+ .catch(function(e){TP.live=false;$('tRes').hidden=!TP.d;M.textContent=typeof e==='string'?e:'Search failed. Check your connection and try again.'}).then(function(){btnBusy(b,false);busyOff()})};
+function renderTP(){var D=TP.d,box=$('tList'),fresh=!box.querySelector('.it');$('tRes').hidden=false;box.innerHTML='';
  if(!D.places.length){$('tResH').textContent='No tourist places found in '+D.name+'. Try a bigger radius.';$('tShow').hidden=true;$('tPb').hidden=true;return}
- $('tPb').hidden=false;$('tResH').textContent=D.places.length+' places in '+D.name+' \u2014 tick the ones you want to visit';
- $('tNote').textContent=TP.part?'OpenStreetMap was busy, so this list may miss some places.':'';
+ $('tPb').hidden=false;$('tResH').textContent=D.places.length+' places in '+D.name+(TP.live?' so far':'')+' \u2014 tick the ones you want to visit';
+ if(!TP.live)$('tNote').textContent=TP.part?'OpenStreetMap was slow, so this list may miss some places \u2014 search again later for the full list.':'';
  D.places.slice().sort(function(a,b){return a.d-b.d}).forEach(function(p){var k=vk(p),row=document.createElement('label');row.className='it';
   row.innerHTML='<input type="checkbox" class="ck"><div style="flex:1;min-width:0"><b></b><small></small></div><div class="d"></div>';
   var c=row.querySelector('input');c.checked=!!TP.sel[k];c.onchange=function(){if(c.checked)TP.sel[k]=1;else delete TP.sel[k];updTP()};
-  row.querySelector('b').textContent=p.n;row.querySelector('small').textContent=p.t;row.querySelector('.d').textContent=p.d.toFixed(1)+' km from centre';box.appendChild(row)});
+  row.querySelector('b').textContent=p.n;row.querySelector('small').textContent=p.t;row.querySelector('.d').textContent=p.d.toFixed(1)+' km from centre';if(fresh)row.classList.add('fadein');box.appendChild(row)});
+ if(TP.live){var w=document.createElement('div');w.className='empty';w.innerHTML='<span class="spin"></span> Still looking for more places\u2026';box.appendChild(w)}
  updTP()}
-function updTP(){var n=Object.keys(TP.sel).length,b=$('tShow');b.hidden=false;b.disabled=!n;b.textContent=n?'Show route on map ('+n+' place'+(n>1?'s':'')+')':'Tick at least one place'}
+function updTP(){var n=Object.keys(TP.sel).length,b=$('tShow'),nd=nDays({dFrom:$('tdF').value,dTo:$('tdT').value});b.hidden=false;b.disabled=!n;b.textContent=n?'Show route on map ('+n+' place'+(n>1?'s':'')+(nd>1?' over '+nd+' days, ~'+Math.ceil(n/nd)+' a day':'')+')':'Tick at least one place'}
 $('tAll').onclick=function(){TP.d.places.forEach(function(p){TP.sel[vk(p)]=1});renderTP()};
 $('tNone').onclick=function(){TP.sel={};renderTP()};
-$('tShow').onclick=function(){var D=TP.d,n=Object.keys(TP.sel).length;if(!D||!n)return;var b=this;b.disabled=true;b.textContent='Planning the route\u2026';
+$('tShow').onclick=function(){var D=TP.d,n=Object.keys(TP.sel).length;if(!D||!n)return;var b=this;btnBusy(b,true,'Planning the route\u2026');
  (TP.rp||Promise.resolve()).then(function(){var t=mkTrip(D,{dFrom:$('tdF').value,dTo:$('tdT').value,sel:n===D.places.length?null:Object.assign({},TP.sel)});
-  note=TP.part?'Place list from Wikipedia (OpenStreetMap was busy).':'';saveTrip(t);TP.d=null;$('tRes').hidden=true;$('tD').value='';openTrip(t)})};
+  note=TP.part?'OpenStreetMap was slow, so the place list may be incomplete.':'';saveTrip(t);TP.d=null;$('tRes').hidden=true;$('tD').value='';btnBusy(b,false);openTrip(t)})};
 function renderTripsList(){var box=$('tTrips');
  var L=live().filter(function(t){return t.status!=='done'}).sort(function(a,b){return (a.dFrom||'').localeCompare(b.dFrom||'')||(b.created||0)-(a.created||0)});
  box.innerHTML=L.length?'':'<div class="empty">No planned trips yet. Plan one above \u2014 it stays here until you finish it, then moves to History.</div>';
  L.forEach(function(t){var v=visitedOf(t).length,n=chosen(t).length,st=tstatus(t),on=!!(dest&&dest.id===t.id),c=document.createElement('div');c.className='card';
   c.innerHTML='<div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1;min-width:0"><b class="tt"></b><div class="hs"></div></div><span class="badge"></span></div><div class="r mt"><button class="p op"></button><button class="fi">\ud83c\udfc1 Finish</button><button class="dl">Delete</button></div>';
   c.querySelector('.tt').textContent=title(t);
-  c.querySelector('.hs').textContent='\ud83d\udcc5 '+range(t)+' \u00b7 '+v+' of '+n+' places visited'+(t.quick?' \u00b7 quick search':'');
+  c.querySelector('.hs').textContent='\ud83d\udcc5 '+range(t)+(nDays(t)>1?' ('+nDays(t)+' days)':'')+' \u00b7 '+v+' of '+n+' places visited'+(t.quick?' \u00b7 quick search':'');
   var bd=c.querySelector('.badge');bd.textContent=on?'On map':st;if(on||st==='Ongoing')bd.classList.add('g');
   c.querySelector('.op').textContent=on?'Show on map':'Open on map';c.querySelector('.op').onclick=function(){if(on)go('map');else openTrip(t)};
   c.querySelector('.fi').onclick=function(){finishTrip(t)};c.querySelector('.dl').onclick=function(){delTrip(t)};box.appendChild(c)})}
@@ -1098,7 +1194,7 @@ function withCommunity(out,lat,lng,R){return community().then(function(C){var ne
   else near.push({n:String(c.name),a:a,o:o,t:(c.category||'place')+' \u00b7 \u2605 community',d:d,media:c.media||[],desc:c.description||'',cid:c.id})});
  var base=out.filter(function(p){return !p.cid||near.indexOf(p)>-1});return base.slice(0,Math.max(0,40-near.length)).concat(near).sort(function(a,b){return a.d-b.d})})}
 var fetchPlacesBase=fetchPlaces;
-fetchPlaces=function(lat,lng,R){return fetchPlacesBase(lat,lng,R).then(function(o){return withCommunity(o,lat,lng,R)},function(e){
+fetchPlaces=function(lat,lng,R,prog){return fetchPlacesBase(lat,lng,R,prog).then(function(o){return withCommunity(o,lat,lng,R)},function(e){
  return withCommunity([],lat,lng,R).then(function(c){if(!c.length)throw e;partial=true;return c})})};
 function placeInfo(p){var w=wiki(p.n,dest?dest.name:'');if(!p.media&&!p.cid)return w;
  var o={text:p.desc||'',credit:p.desc?'Added by a traveller, checked by admin':'',photos:[],videos:[],frames:[]};
