@@ -161,7 +161,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
    <div class="r"><input id="q" autocomplete="off" placeholder="Destination (e.g. Yercaud)" aria-label="Destination" enterkeyhint="go"><button id="go" class="p">Go</button><button id="mn" aria-label="More options" title="More options"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7" class="f"/><circle cx="12" cy="12" r="1.7" class="f"/><circle cx="19" cy="12" r="1.7" class="f"/></svg></button><button id="hide" aria-label="Hide search" title="Hide search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button></div>
    <div class="r" id="opts" hidden>
     <select id="lyr" aria-label="Map type"><option value="map">Map</option><option value="sat">Satellite</option><option value="hyb">Hybrid (roads + names)</option></select>
-    <select id="prov" aria-label="Map provider"><option value="tomtom">Maps: TomTom</option><option value="osm">Maps: OpenStreetMap</option></select>
+    <select id="prov" aria-label="Map provider"><option value="osm">Maps: OpenStreetMap</option><option value="tomtom">Maps: TomTom</option></select>
     <select id="rad" aria-label="Radius"><option value="5000">5 km</option><option value="10000" selected>10 km</option><option value="20000">20 km</option><option value="40000">40 km</option></select>
     <select id="saved" aria-label="Saved destinations"><option value="">Saved offline&#x2026;</option></select>
     <button id="save">&#x2b07; Save offline</button><button id="pick">Set start on map</button><button id="trf">&#xd83d;&#xdea6; Traffic</button></div>
@@ -235,6 +235,16 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
  <button id="guest" style="width:100%">Continue without signing in</button>
  <div class="mu" style="margin-top:6px">Without signing in, trips are kept on this device only.</div>
 </div></div>
+<script>
+(function(){var on=/[?&]debug/.test(location.search),E=[];window.__tgErrors=E;
+ function show(){if(!on)return;var d=document.getElementById('dbg');if(!d){d=document.createElement('div');d.id='dbg';d.style.cssText='position:fixed;left:8px;right:8px;top:8px;z-index:99999;max-height:50vh;overflow:auto;background:#b00020;color:#fff;font:12px/1.45 monospace;padding:10px 12px;border-radius:10px;white-space:pre-wrap;word-break:break-word';(document.body||document.documentElement).appendChild(d)}
+  d.textContent='Tour Guide debug\n'+navigator.userAgent+'\nScreen '+innerWidth+'x'+innerHeight+' | online '+navigator.onLine+'\n\n'+(E.length?E.join('\n\n'):'No errors so far. Use the app; errors will appear here.')}
+ function add(m){E.push(new Date().toLocaleTimeString()+'  '+m);if(E.length>30)E.shift();show()}
+ window.addEventListener('error',function(e){var t=e.target;if(t&&t!==window&&t.tagName){if(t.tagName==='SCRIPT')add('Could not load '+(t.src||'a script'));return}
+  add((e.message||'Error')+'  @ line '+(e.lineno||'?')+':'+(e.colno||'?')+(e.error&&e.error.stack?'\n'+String(e.error.stack).slice(0,600):''))},true);
+ window.addEventListener('unhandledrejection',function(e){var r=e.reason;add('Promise: '+(r&&r.message?r.message:String(r)))});
+ document.addEventListener('DOMContentLoaded',show);window.addEventListener('load',function(){setTimeout(show,1500)})})();
+</script>
 <script src="config.js"></script>
 <script>
 var TG=window.TG_CONFIG||{};
@@ -298,8 +308,9 @@ function lyr(){return $('lyr').value}
 var TOMTOM_KEY=TG.tomtomKey||''; // paste your TomTom API key here (developer.tomtom.com \u2192 Dashboard \u2192 Keys)
 var ttDown=0,ttProbeT=0,ttWarned=0;
 function ttKey(){return String(ls('ttkey')||TOMTOM_KEY||'').trim()}
-function prov(){return ls('prov')||'tomtom'}
-function ttOn(){return !!ttKey()&&prov()==='tomtom'&&online()&&!(ttDown&&Date.now()-ttDown<15*60000)}
+function prov(){return ls('prov')||'osm'}
+function ttTiles(){return ttOn()&&prov()==='tomtom'} // map pictures; routes, traffic and search use TomTom whenever a key is set
+function ttOn(){return !!ttKey()&&online()&&!(ttDown&&Date.now()-ttDown<15*60000)} // TomTom routes, traffic and search
 function ttQ(){return 'key='+encodeURIComponent(ttKey())}
 function ttLayers(L){var T='https://api.tomtom.com/map/1/tile/',st=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'night':'main';
  var r={map:[T+'basic/'+st+'/{z}/{x}/{y}.png?'],sat:[T+'sat/main/{z}/{x}/{y}.jpg?'],hyb:[T+'sat/main/{z}/{x}/{y}.jpg?',T+'hybrid/main/{z}/{x}/{y}.png?']}[L].slice();
@@ -336,15 +347,17 @@ function tileAny(L,i,z,x,y){return tileBlob(L,i,z,x,y,true).then(function(b){if(
 var tcache={},tt=0;
 function rmTile(k){tcache[k].forEach(function(n){if(n._u)URL.revokeObjectURL(n._u);if(n.parentNode)tg.removeChild(n)});delete tcache[k]}
 function clearTiles(){for(var k in tcache)rmTile(k)}
-function addTile(L,z,x,y,size){if(ttOn())return ttLayers(L).map(function(u,i){
+function addTile(L,z,x,y,size){if(ttTiles())return ttLayers(L).map(function(u,i){
  var sv=el('svg',{x:x*size-OX,y:y*size-OY,width:size+.5,height:size+.5,viewBox:'0 0 256 256',preserveAspectRatio:'none'},tg),im=el('image',{width:256,height:256},sv),src=u.replace('{z}',z).replace('{x}',x).replace('{y}',y)+ttQ();
  im.addEventListener('error',function(){ttProbe(src);var e=LY[L][Math.min(i,LY[L].length-1)];if(e&&i===0)im.setAttribute('href',tsrc(L,i,z,x,y))},{once:true});
  im.setAttribute('href',src);return sv});
- return LY[L].map(function(_,i){
+ var TF=null;if(ls('traffic')&&ttOn()){TF=el('svg',{x:x*size-OX,y:y*size-OY,width:size+.5,height:size+.5,viewBox:'0 0 256 256',preserveAspectRatio:'none'},null);el('image',{width:256,height:256,href:'https://api.tomtom.com/traffic/map/4/tile/flow/relative0/'+z+'/'+x+'/'+y+'.png?thickness=6&'+ttQ()},TF)}
+ var out=LY[L].map(function(_,i){
  var sv=el('svg',{x:x*size-OX,y:y*size-OY,width:size+.5,height:size+.5,viewBox:'0 0 256 256',preserveAspectRatio:'none'},tg),im=el('image',{width:256,height:256},sv);
  tileAny(L,i,z,x,y).then(function(r){if(!sv.parentNode)return;
   if(!r){if(online())im.setAttribute('href',tsrc(L,i,z,x,y));return}
-  var f=Math.pow(2,r.d),c=256/f;sv.setAttribute('viewBox',(x%f)*c+' '+(y%f)*c+' '+c+' '+c);sv._u=URL.createObjectURL(r.b);im.setAttribute('href',sv._u)});return sv})}
+  var f=Math.pow(2,r.d),c=256/f;sv.setAttribute('viewBox',(x%f)*c+' '+(y%f)*c+' '+c+' '+c);sv._u=URL.createObjectURL(r.b);im.setAttribute('href',sv._u)});return sv});
+ if(TF){tg.appendChild(TF);out.push(TF)}return out}
 function updateTiles(){
  var L=lyr(),s=vb.w/Math.max(svg.clientWidth,1),zt=Math.max(3,Math.min(18,Math.round(Z-Math.log(s)/Math.LN2))),
   size=256*Math.pow(2,Z-zt),n=Math.pow(2,zt),want={};
@@ -661,12 +674,12 @@ function draw(){
  if(start){
   var dim=legs.length>0;
   if(route){var AL=route.alts&&route.alts.length>1?route.alts:null;
-   if(AL)AL.forEach(function(a,k){if(k!==route.sel)line(a.pts,'#9aa0a6',5,s,dim?.2:.75,0,!dim)});
+   if(AL)AL.forEach(function(a,k){if(k!==route.sel)line(a.pts,'#8ab4f8',5,s,dim?.25:.95,0,!dim)});
    line(route.pts,RT,AL?5:4,s,dim?.3:(AL?.95:.6),0,!!AL&&!dim);
    if(!dim)(route.traffic||[]).forEach(function(t){var seg=route.pts.slice(t.i0,t.i1+1);if(seg.length>1)line(seg,t.m>=3?'#d93025':t.m===2?'#e8710a':'#f9ab00',5,s,1,0,0)});
    if(AL&&!dim)AL.forEach(function(a,k){var q=a.pts[Math.floor(a.pts.length*(.35+.12*k))];if(!q)return;var x=mx(q[1]),y=my(q[0]),t=fmt(a.min),w=(t.length*7+14)*s,g=el('g',{style:'cursor:pointer'},og);
-    el('rect',{x:x-w/2,y:y-11*s,width:w,height:22*s,rx:6*s,fill:k===route.sel?RT:'#fff',stroke:k===route.sel?'#fff':'#9aa0a6','stroke-width':1.5*s},g);
-    el('text',{x:x,y:y+4.5*s,'text-anchor':'middle','font-size':12*s,'font-weight':700,fill:k===route.sel?'#fff':'#3c4043'},g).textContent=t})
+    el('rect',{x:x-w/2,y:y-11*s,width:w,height:22*s,rx:6*s,fill:k===route.sel?RT:'#fff',stroke:k===route.sel?'#fff':'#8ab4f8','stroke-width':1.5*s},g);
+    el('text',{x:x,y:y+4.5*s,'text-anchor':'middle','font-size':12*s,'font-weight':700,fill:k===route.sel?'#fff':'#1967d2'},g).textContent=t})
    var a0=route.pts[0],ag=el('g',{},og);el('circle',{cx:mx(a0[1]),cy:my(a0[0]),r:11*s,fill:RT,stroke:'#fff','stroke-width':2*s},ag);
    el('text',{x:mx(a0[1]),y:my(a0[0])+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},ag).textContent='A'}
   // visited legs (the leg leading INTO a visited place) in grey, drawn first so the remaining blue route stays on top
@@ -1042,12 +1055,12 @@ function showRegion(lat,lng,z){OX=rx(lng);OY=ry(lat);clearTiles();var w=svg.clie
 function initRegion(){showRegion(22.5,79,5);
  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(function(p){if(dest||trk.got)return;
   gpsPos={name:'My location',lat:p.coords.latitude,lng:p.coords.longitude};$('q0').value='My location';showRegion(gpsPos.lat,gpsPos.lng,11)},function(){},{timeout:8000,maximumAge:600000})}
-function attr(){if(ttOn()){$('attr').textContent=lyr()==='map'?'Map \u00a9 TomTom':'Imagery and labels \u00a9 TomTom';return}$('attr').textContent={map:'Map \u00a9 Esri, HERE, Garmin, OpenStreetMap contributors',sat:'Imagery \u00a9 Esri, Maxar, Earthstar Geographics',hyb:'Imagery \u00a9 Esri, Maxar \u00b7 Roads and labels \u00a9 Esri'}[$('lyr').value]}
+function attr(){if(ttTiles()){$('attr').textContent=lyr()==='map'?'Map \u00a9 TomTom':'Imagery and labels \u00a9 TomTom';return}$('attr').textContent={map:'Map \u00a9 Esri, HERE, Garmin, OpenStreetMap contributors',sat:'Imagery \u00a9 Esri, Maxar, Earthstar Geographics',hyb:'Imagery \u00a9 Esri, Maxar \u00b7 Roads and labels \u00a9 Esri'}[$('lyr').value]}
 $('lyr').onchange=function(){clearTiles();updateTiles();attr()};
 function trfBtn(){var b=$('trf');if(b)b.classList.toggle('on',!!ls('traffic'))}trfBtn();
-$('trf').onclick=function(){if(!ttKey()){toast('The traffic layer needs a TomTom key');return}ls('traffic',ls('traffic')?null:1);trfBtn();clearTiles();updateTiles();toast(ls('traffic')?'Traffic layer on: green = moving, orange/red = slow':'Traffic layer off')};
-(function(){var p=$('prov');if(!ttKey()){p.options[0].disabled=true;p.options[0].textContent='Maps: TomTom (no key set)';p.value='osm'}else p.value=prov();
- p.onchange=function(){ls('prov',this.value);ttDown=0;clearTiles();updateTiles();attr();toast(this.value==='tomtom'?'Using TomTom maps, routes and places':'Using OpenStreetMap')}})();
+$('trf').onclick=function(){if(!ttOn()){toast('The traffic layer needs a TomTom key and internet');return}ls('traffic',ls('traffic')?null:1);trfBtn();clearTiles();updateTiles();toast(ls('traffic')?'Traffic layer on: green = moving, orange/red = slow':'Traffic layer off')};
+(function(){var p=$('prov'),o=p.querySelector('option[value=tomtom]');if(!ttKey()){o.disabled=true;o.textContent='Maps: TomTom (no key set)';p.value='osm'}else p.value=prov();
+ p.onchange=function(){ls('prov',this.value);ttDown=0;clearTiles();updateTiles();attr();toast(this.value==='tomtom'?'Showing the TomTom map':'Showing the OpenStreetMap map'+(ttKey()?' \u2014 routes and live traffic still use TomTom':''))}})();
 window.addEventListener('offline',function(){clearTiles();updateTiles();attr()});window.addEventListener('online',function(){clearTiles();updateTiles();attr()});
 window.addEventListener('offline',function(){say('You are offline. Saved maps, saved routes and GPS tracking still work.')});
 window.addEventListener('online',function(){if(dest)renderList();else say('Back online.')});
