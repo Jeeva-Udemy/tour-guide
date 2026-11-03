@@ -128,11 +128,13 @@ button.busy{pointer-events:none;opacity:.9;display:inline-flex;align-items:cente
 details summary{cursor:pointer;font-size:14px;font-weight:600}
 #routes{background:var(--card);border:1px solid var(--bd);border-radius:14px;margin:0 0 8px;overflow:hidden}
 #routes .rh{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer}#routes .rh .sum{flex:1;min-width:0;font-size:14px;line-height:1.35}
-#routes .rh .sum small{display:block;color:var(--mu);font-size:12px}#routes .rh button{min-height:34px;padding:4px 10px;flex:none}
+#routes .rh .sum small{display:block;color:var(--mu);font-size:12px}#routes .rh button{min-height:46px;min-width:46px;padding:6px;flex:none;border-radius:12px}#routes .rh button .ic{width:24px;height:24px}
 #routes .rb{padding:0 12px 10px}#routes .rm{display:flex;gap:6px;margin-bottom:8px}#routes .rm button{flex:1;min-height:36px;font-size:13px}
 #routes .rm button.on{background:var(--tx);color:var(--bg);border-color:var(--tx);outline:none}
 .ro{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;cursor:pointer}
 .ro.sel{border:2px solid #1a73e8;padding:9px}.ro .t1{flex:1;min-width:0}.ro b{font-size:16px}.ro small{display:block;color:var(--mu);font-size:12px;margin-top:2px}
+.didyou{background:var(--card);border:1px solid #f9ab00;border-radius:12px;padding:10px 12px;margin:0 0 8px;font-size:13px;line-height:1.45}.didyou:empty{display:none}
+.didyou button{min-height:34px;font-size:13px;margin:6px 6px 0 0;padding:4px 10px}
 .tg2{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:2px;background:#e6f4ea;color:#137333}
 .trf{font-size:12px;font-weight:600;text-align:right;flex:none}.trf.ok{color:#188038}.trf.mid{color:#e8710a}.trf.bad{color:#d93025}
 .flow{margin:6px 0}.fl{display:flex;gap:10px;position:relative;padding:0 0 12px}.fl:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:2px;border-left:2px dotted var(--mu)}
@@ -168,7 +170,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
   </div>
  </div>
  <div id="sheet"><div id="grab"><i></i></div><div id="body">
-  <div id="tripbar" hidden></div><div id="routes" hidden></div><div id="daybar" hidden></div>
+  <div id="tripbar" hidden></div><div id="didyou"></div><div id="routes" hidden></div><div id="daybar" hidden></div>
   <div id="msg">Plan a trip in the Trip tab, or enter a Start and Destination above and tap Go.</div>
   <div id="tabs"><button id="tA" class="tab on">To visit</button><button id="tV" class="tab">Visited</button><button id="tP" class="tab" title="Pick only the places you want to visit"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8 12.2 2.8 2.8L16.2 9"/></svg> Choose</button></div>
   <div id="detail" hidden></div><div id="items"></div><div id="vlist" hidden></div><div id="plist" hidden></div></div></div>
@@ -248,7 +250,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
 <script src="config.js"></script>
 <script>
 var TG=window.TG_CONFIG||{};
-var IC={nav:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 20 12 16 5 20z"/></svg>',cross:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/></svg>',check:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8 12.2 2.8 2.8L16.2 9"/></svg>'};
+var IC={refresh:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4v4.6H16"/></svg>',down:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',up:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>',nav:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 20 12 16 5 20z"/></svg>',cross:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/></svg>',check:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="m8 12.2 2.8 2.8L16.2 9"/></svg>'};
 var Z=14,W=256*Math.pow(2,Z),NS='http://www.w3.org/2000/svg',OX=0,OY=0;
 function rx(l){return (l+180)/360*W}
 function ry(a){var r=a*Math.PI/180;return (1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*W}
@@ -318,7 +320,7 @@ function ttLayers(L){var T='https://api.tomtom.com/map/1/tile/',st=window.matchM
 function ttSet(why){if(!ttDown){toast('TomTom is not answering ('+why+') \u2014 switched to OpenStreetMap for now',null,null,6000)}ttDown=Date.now();clearTiles();updateTiles();attr()}
 function ttFail(e){if(/HTTP (401|403|429)/.test(String(e&&e.message||e)))ttSet(/429/.test(String(e))?'limit reached':'limit reached or key not valid')}
 function ttProbe(u){if(Date.now()-ttProbeT<60000)return;ttProbeT=Date.now();fetch(u).then(function(r){if(r.status===401||r.status===403||r.status===429)ttSet(r.status===429?'limit reached':'limit reached or key not valid')}).catch(function(){})}
-var TTM={car:'car',bike:'bicycle',foot:'pedestrian'};
+var TTM={car:'car',bike:'bicycle',foot:'pedestrian',moto:'motorcycle'};
 function ttMod(v){return /SHARP_LEFT/.test(v)?'sharp left':/SHARP_RIGHT/.test(v)?'sharp right':/(BEAR|KEEP)_LEFT/.test(v)?'slight left':/(BEAR|KEEP)_RIGHT/.test(v)?'slight right':/TURN_LEFT/.test(v)?'left':/TURN_RIGHT/.test(v)?'right':/UTURN/.test(v)?'uturn':/STRAIGHT/.test(v)?'straight':''}
 // one request for the whole tour (TomTom allows up to 150 stops in between)
 function ttRoute(m,pts){var loc=pts.map(function(p){return p[0].toFixed(6)+','+p[1].toFixed(6)}).join(':');
@@ -383,7 +385,7 @@ var SRCN={db:'Our database',cache:'Saved results',tt:'TomTom',wiki:'Wikipedia',o
 function srcHtml(S){return '<div class="srcs">'+Object.keys(S).map(function(k){var v=S[k];return '<span class="src '+(v==='ok'?'ok':v==='no'?'no':'')+'">'+(v==='wait'?'<span class="spin"></span>':v==='ok'?'&#10003;':'&#8211;')+' '+SRCN[k]+'</span>'}).join('')+'</div>'}
 
 // ---------- routing (cached per leg so it works offline) ----------
-var RH={car:['https://routing.openstreetmap.de/routed-car','https://router.project-osrm.org'],bike:['https://routing.openstreetmap.de/routed-bike'],foot:['https://routing.openstreetmap.de/routed-foot']};
+var RH={moto:['https://routing.openstreetmap.de/routed-car','https://router.project-osrm.org'],car:['https://routing.openstreetmap.de/routed-car','https://router.project-osrm.org'],bike:['https://routing.openstreetmap.de/routed-bike'],foot:['https://routing.openstreetmap.de/routed-foot']};
 function stepTxt(t){var m=t.maneuver,y=m.type,d=m.modifier||'',n=t.name?' onto '+t.name:'';
  if(y==='depart')return 'Start'+(t.name?' on '+t.name:'');
  if(y==='arrive')return 'Arrive at your destination';
@@ -414,7 +416,7 @@ function osrmLegs(m,p){return osrm(m,p).then(function(r){return r.legs.map(legOb
 function legsFor(m,p){return ttOn()?ttRoute(m,p).catch(function(){return osrmLegs(m,p)}):osrmLegs(m,p)}
 function viaOf(ins,total){var d={};ins.forEach(function(t,k){var nx=ins[k+1],r=(t.roadNumbers&&t.roadNumbers[0])||t.street;if(!r)return;d[r]=(d[r]||0)+Math.max(0,(nx?nx.routeOffsetInMeters:total)-t.routeOffsetInMeters)});
  return Object.keys(d).sort(function(a,b){return d[b]-d[a]}).slice(0,2).join(', ')}
-function ttAlts(a,b){return fj('https://api.tomtom.com/routing/1/calculateRoute/'+a.lat.toFixed(6)+','+a.lng.toFixed(6)+':'+b.lat.toFixed(6)+','+b.lng.toFixed(6)+'/json?travelMode=car&traffic=true&maxAlternatives=2&computeTravelTimeFor=all&sectionType=traffic&routeRepresentation=polyline&instructionsType=text&language=en-GB&'+ttQ(),{},25000)
+function ttAlts(a,b,tm){return fj('https://api.tomtom.com/routing/1/calculateRoute/'+a.lat.toFixed(6)+','+a.lng.toFixed(6)+':'+b.lat.toFixed(6)+','+b.lng.toFixed(6)+'/json?travelMode='+(tm||'car')+'&traffic=true&maxAlternatives=2&computeTravelTimeFor=all&sectionType=traffic&routeRepresentation=polyline&instructionsType=text&language=en-GB&'+ttQ(),{},25000)
  .then(function(j){var R=(j.routes||[]).map(function(r){var pts=[];(r.legs||[]).forEach(function(l){(l.points||[]).forEach(function(q){pts.push([q.latitude,q.longitude])})});
   var sm=r.summary||{},ins=(r.guidance&&r.guidance.instructions)||[],len=sm.lengthInMeters||0;
   return {pts:pts,km:len/1000,min:(sm.travelTimeInSeconds||0)/60,delay:(sm.trafficDelayInSeconds||0)/60,free:(sm.noTrafficTravelTimeInSeconds||sm.travelTimeInSeconds||0)/60,via:viaOf(ins,len),src:'tomtom',
@@ -426,7 +428,7 @@ function osrmAlts(a,b){var H=RH.car,c=a.lng.toFixed(6)+','+a.lat.toFixed(6)+';'+
   return j.routes.map(function(r){var o=legObj(r.legs[0]);o.via=r.legs[0].summary||'';o.delay=0;o.free=o.min;o.traffic=[];o.src='osrm';return o})}).catch(function(e){if(k+1<H.length)return go(k+1);throw e})}
  return go(0)}
 // start -> destination: up to 3 routes, fastest first (with live traffic when TomTom is on)
-function altRoutes(a,b){return (ttOn()?ttAlts(a,b).catch(function(){return osrmAlts(a,b)}):osrmAlts(a,b)).then(function(L){L.sort(function(x,y){return x.min-y.min});return L})
+function altRoutes(a,b,tm){return (ttOn()?ttAlts(a,b,tm).catch(function(){return osrmAlts(a,b)}):osrmAlts(a,b)).then(function(L){L.sort(function(x,y){return x.min-y.min});return L})
  .catch(function(){return routeLegs('car',[[a.lat,a.lng],[b.lat,b.lng]],true).then(function(L){if(!L[0])throw 0;var o=L[0];o.delay=0;o.free=o.min;o.traffic=[];o.via='';return [o]})})}
 function mkRoute(L,i){var r={};for(var k in L[i])r[k]=L[i][k];r.alts=L.map(function(x){var c={};for(var k in x)c[k]=x[k];return c});r.sel=i;r.t=Date.now();return r}
 function legRoute(a,b,m){return routeLegs(m,[[a.a,a.o],[b.a,b.o]]).then(function(L){if(!L[0])throw 0;return L[0]})}
@@ -436,23 +438,37 @@ function legRoute(a,b,m){return routeLegs(m,[[a.a,a.o],[b.a,b.o]]).then(function
 function userCC(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';if(/Calcutta|Kolkata/.test(tz))return 'IN';
  var l=(navigator.languages&&navigator.languages[0])||navigator.language||'',m=l.match(/-([A-Za-z]{2})$/);return m?m[1].toUpperCase():''}catch(e){return ''}}
 var GC={};try{GC=JSON.parse(localStorage.getItem('gc2')||'{}')}catch(e){}
+// each candidate gets a class: 3 = town/city/area, 2 = landmark or district, 1 = street/address
 function geoCands(q,bias,cc){var T=[];
  if(ttOn())T.push(function(){var b=bias?'&lat='+bias.lat.toFixed(4)+'&lon='+bias.lng.toFixed(4):'';
-  return fj('https://api.tomtom.com/search/2/geocode/'+encodeURIComponent(q)+'.json?limit=5&language=en-GB'+b+(cc?'&countrySet='+cc:'')+'&'+ttQ(),{},12000).then(function(j){
-   return (j.results||[]).map(function(r){var a=r.address||{};return {name:a.municipality||a.municipalitySubdivision||a.countrySecondarySubdivision||q,lat:r.position.lat,lng:r.position.lon}})}).catch(function(e){ttFail(e);return []})});
- T.push(function(){return fj('https://nominatim.openstreetmap.org/search?format=json&limit=5'+(cc?'&countrycodes='+cc.toLowerCase():'')+'&q='+encodeURIComponent(q),{},15000).then(function(a){
-  return a.map(function(x){return {name:x.display_name.split(',')[0],lat:+x.lat,lng:+x.lon}})}).catch(function(){return []})});
- T.push(function(){return fj('https://photon.komoot.io/api/?limit=5'+(bias?'&lat='+bias.lat.toFixed(4)+'&lon='+bias.lng.toFixed(4):'')+'&q='+encodeURIComponent(q),{},15000).then(function(j){
-  return (j.features||[]).filter(function(f){return !cc||!f.properties.countrycode||String(f.properties.countrycode).toUpperCase()===cc}).map(function(f){return {name:f.properties.name||q,lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0]}})}).catch(function(){return []})});
+  return fj('https://api.tomtom.com/search/2/geocode/'+encodeURIComponent(q)+'.json?limit=8&language=en-GB'+b+(cc?'&countrySet='+cc:'')+'&'+ttQ(),{},12000).then(function(j){
+   return (j.results||[]).map(function(r){var a=r.address||{},geo=r.type==='Geography';
+    return {name:geo?(a.municipality||a.municipalitySubdivision||a.countrySecondarySubdivision||a.countrySubdivision||q):(r.poi&&r.poi.name)||a.streetName||a.municipality||q,lat:r.position.lat,lng:r.position.lon,
+     cls:geo?(/Municipality|Neighbourhood|CountryTertiary/.test(r.entityType||'')?3:2):r.type==='POI'?2:1,label:a.freeformAddress||''}})}).catch(function(e){ttFail(e);return []})});
+ T.push(function(){return fj('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8'+(cc?'&countrycodes='+cc.toLowerCase():'')+'&q='+encodeURIComponent(q),{},15000).then(function(a){
+  return a.map(function(x){var c=x.category||x['class'],t=x.type||'';return {name:x.name||x.display_name.split(',')[0],lat:+x.lat,lng:+x.lon,label:x.display_name.split(',').slice(0,3).join(','),
+   cls:(c==='place'&&/city|town|village|hamlet|suburb|municipality|locality|quarter|neighbourhood/.test(t))||c==='boundary'?3:c==='highway'?1:2}})}).catch(function(){return []})});
+ T.push(function(){return fj('https://photon.komoot.io/api/?limit=8'+(bias?'&lat='+bias.lat.toFixed(4)+'&lon='+bias.lng.toFixed(4):'')+'&q='+encodeURIComponent(q),{},15000).then(function(j){
+  return (j.features||[]).filter(function(f){return !cc||!f.properties.countrycode||String(f.properties.countrycode).toUpperCase()===cc}).map(function(f){var pr=f.properties;
+   return {name:pr.name||q,lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],label:[pr.name,pr.city,pr.state].filter(Boolean).join(', '),cls:pr.osm_key==='place'?3:pr.osm_key==='highway'?1:2}})}).catch(function(){return []})});
  var i=0;function next(){if(i>=T.length)return Promise.resolve([]);return T[i++]().then(function(c){return c.length?c:next()})}return next()}
-function pickNear(c,bias){if(!c.length)return null;if(!bias)return c[0];return c.slice().sort(function(x,y){return hav(bias.lat,bias.lng,x.lat,x.lng)-hav(bias.lat,bias.lng,y.lat,y.lng)})[0]}
-// bias: the destination (when finding the start) or your live location; picks the match nearest to it, inside your country first
-function geocode(q,bias){bias=bias||gpsPos||null;var cc=userCC(),k=q.toLowerCase()+'|'+cc+'|'+(bias?Math.round(bias.lat)+','+Math.round(bias.lng):'');
+function pickNear(c,bias,q){if(!c.length)return null;var top=Math.max.apply(0,c.map(function(x){return x.cls||2})),G=c.filter(function(x){return (x.cls||2)===top}),ql=String(q||'').toLowerCase().split(',')[0].trim();
+ // same-named places (e.g. several "Salem"): take the one nearest the bias; otherwise trust the service's own ranking (it knows Ooty = Udhagamandalam)
+ var E=G.filter(function(x){return String(x.name).toLowerCase().trim()===ql}),best;
+ if(E.length>1&&bias)best=E.slice().sort(function(x,y){return hav(bias.lat,bias.lng,x.lat,x.lng)-hav(bias.lat,bias.lng,y.lat,y.lng)})[0];else best=E.length===1?E[0]:G[0];
+ var alts=[];c.forEach(function(x){if(x===best||(x.cls||2)<2||hav(x.lat,x.lng,best.lat,best.lng)<25||alts.some(function(a){return hav(a.lat,a.lng,x.lat,x.lng)<25}))return;alts.push({name:x.name,lat:x.lat,lng:x.lng,label:x.label||x.name})});
+ var r={name:best.name,lat:best.lat,lng:best.lng,label:best.label||best.name};if(alts.length)r.alts=alts.slice(0,3);return r}
+var FG={}; // places the user picked from "Not the right place?"
+// bias: the destination (when finding the start) or your live location; towns/cities first, then the match nearest to the bias
+function geocode(q,bias){var f=FG[q.toLowerCase().trim()];if(f)return Promise.resolve(f);bias=bias||gpsPos||null;var cc=userCC(),k='v4|'+q.toLowerCase()+'|'+cc+'|'+(bias?Math.round(bias.lat)+','+Math.round(bias.lng):'');
  function keep(r){GC[k]=r;try{localStorage.setItem('gc2',JSON.stringify(GC))}catch(e){}return r}
  if(!online())return GC[k]?Promise.resolve(GC[k]):Promise.reject('You are offline and \u201c'+q+'\u201d has not been searched before.');
- return geoCands(q,bias,cc).then(function(c){return c.length||!cc?c:geoCands(q,bias,'')}).then(function(c){var r=pickNear(c,bias);
+ return geoCands(q,bias,cc).then(function(c){return c.length||!cc?c:geoCands(q,bias,'')}).then(function(c){var r=pickNear(c,bias,q);
   if(!r)throw 'Could not find \u201c'+q+'\u201d. Check the spelling, or add the state (e.g. \u201c'+q+', Tamil Nadu\u201d).';return keep(r)})
   .catch(function(e){if(GC[k])return GC[k];throw typeof e==='string'?e:'Could not reach the place-search service for \u201c'+q+'\u201d. Check your connection and try again.'})}
+function didYou(D,q,onPick){var w=document.createElement('div');w.className='didyou';if(!D||!D.alts||!D.alts.length)return w;
+ w.innerHTML='<span>Showing <b></b> for \u201c<i></i>\u201d. Not the right place?</span>';w.querySelector('b').textContent=D.label||D.name;w.querySelector('i').textContent=q;
+ D.alts.forEach(function(a){var b=document.createElement('button');b.textContent=a.label||a.name;b.onclick=function(){FG[q.toLowerCase().trim()]={name:a.name,lat:a.lat,lng:a.lng,label:a.label};onPick()};w.appendChild(b)});return w}
 function farNote(S,D){if(!S||!D)return '';var km=hav(S.lat,S.lng,D.lat,D.lng);return km>2500?'Start \u201c'+S.name+'\u201d was found '+Math.round(km)+' km away \u2014 if that is wrong, add the state to the start (e.g. \u201c'+S.name+', Tamil Nadu\u201d). ':''}
 var OP=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter','https://maps.mail.ru/osm/tools/overpass/api/interpreter'];
 // Ask all mirrors (staggered by 1.5 s); first good answer wins. Each mirror is tried with POST, then GET.
@@ -740,8 +756,8 @@ function refreshRoutes(btn){if(!dest||!dest.from)return;btnBusy(btn,true);busyOn
 function flowHtml(F){return '<div class="flow">'+F.map(function(f){return '<div class="fl"><span class="ic2">'+f.ic+'</span><div><b>'+esc(f.t)+'</b><small>'+esc(f.s||'')+'</small>'+(f.a?'<a href="'+esc(f.a[1])+'" target="_blank" rel="noopener">'+esc(f.a[0])+' \u2197</a>':'')+'</div></div>'}).join('')+'</div>'}
 function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.pts||!$('detail').hidden){B.hidden=true;return}B.hidden=false;
  var AL=route.alts&&route.alts.length?route.alts:[route],tt=trafficTxt(route);
- B.innerHTML='<div class="rh"><div class="sum"></div><button class="rf" title="Refresh with live traffic" aria-label="Refresh with live traffic">\u21bb</button><span class="mu">'+(RC.open?'\u25b4':'\u25be')+'</span></div>'+(RC.open?'<div class="rb"><div class="rm"><button data-m="car">\ud83d\ude97 Car</button><button data-m="train">\ud83d\ude86 Train</button><button data-m="bus">\ud83d\ude8c Bus</button></div><div class="rl"></div></div>':'');
- B.querySelector('.sum').innerHTML='<b>'+esc(dest.from.name)+' \u2192 '+esc(dest.name)+'</b> \u00b7 '+(RC.mode==='car'?'\ud83d\ude97 '+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km':RC.mode==='train'?'\ud83d\ude86 Train':'\ud83d\ude8c Bus')+'<small>'+(RC.mode==='car'?esc((route.via?'via '+route.via+' \u00b7 ':'')+tt[1]+' \u00b7 '+AL.length+' route'+(AL.length>1?'s':'')):'Step-by-step directions')+'</small>';
+ B.innerHTML='<div class="rh"><div class="sum"></div><button class="rf" title="Refresh with live traffic" aria-label="Refresh with live traffic">'+IC.refresh+'</button><button class="tgl" aria-label="'+(RC.open?'Hide':'Show')+' route options">'+(RC.open?IC.up:IC.down)+'</button></div>'+(RC.open?'<div class="rb"><div class="rm"><button data-m="car">\ud83d\ude97 Car</button><button data-m="train">\ud83d\ude86 Train</button><button data-m="bus">\ud83d\ude8c Bus</button><button data-m="bike">\ud83c\udfcd Bike</button></div><div class="rl"></div></div>':'');
+ B.querySelector('.sum').innerHTML='<b>'+esc(dest.from.name)+' \u2192 '+esc(dest.name)+'</b> \u00b7 '+(RC.mode==='car'?'\ud83d\ude97 '+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km':RC.mode==='train'?'\ud83d\ude86 Train':RC.mode==='bike'?'\ud83c\udfcd Bike':'\ud83d\ude8c Bus')+'<small>'+(RC.mode==='car'?esc((route.via?'via '+route.via+' \u00b7 ':'')+tt[1]+' \u00b7 '+AL.length+' route'+(AL.length>1?'s':'')):RC.mode==='bike'?'Two-wheeler routes':'Step-by-step directions')+'</small>';
  B.querySelector('.rh').onclick=function(e){if(e.target.closest('.rf'))return;RC.open=!RC.open;renderRoutes()};
  B.querySelector('.rf').onclick=function(e){e.stopPropagation();refreshRoutes(this)};
  if(!RC.open)return;
@@ -752,12 +768,20 @@ function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.p
    d.onclick=function(){if(k!==route.sel)pickAlt(k)};L.appendChild(d)});
   if(route.src==='tomtom'){var n=document.createElement('div');n.className='mu';n.textContent='Times include live traffic. Orange/red on the blue line = slow traffic. Tap \u21bb before you leave.';L.appendChild(n)}return}
  var key=RC.mode+':'+o.a+','+o.o+'>'+p.a+','+p.o,c=RC.tr[key];
+ if(RC.mode==='bike'){if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Finding motorbike routes\u2026</div>';
+   altRoutes(dest.from,dest,'motorcycle').then(function(A){RC.tr[key]={list:A,sel:0}},function(){RC.tr[key]={err:'No motorbike route found.'}}).then(renderRoutes);return}
+  if(c.err){L.textContent=c.err;return}
+  c.list.forEach(function(a,k){var t=trafficTxt(a),d=document.createElement('div');d.className='ro'+(k===c.sel?' sel':'');
+   d.innerHTML='<div class="t1"><b>'+fmt(a.min)+'</b>'+(k===0&&c.list.length>1?'<span class="tg2">Fastest</span>':'')+'<small>'+a.km.toFixed(1)+' km'+(a.via?' \u00b7 via '+esc(a.via):'')+'</small></div><div class="trf '+t[0]+'">'+esc(t[1])+'</div>';
+   d.onclick=function(){c.sel=k;legs=[{pts:a.pts,c:'#6d4c41'}];fitSegs();draw();renderRoutes()};L.appendChild(d)});
+  var bn=document.createElement('div');bn.className='mu';bn.textContent='Two-wheeler routes'+(c.list[0]&&c.list[0].src==='tomtom'?' with live traffic':'')+'. Tap a route to see it on the map.';L.appendChild(bn);return}
  if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Working out the '+RC.mode+' journey\u2026</div>';
   (RC.mode==='train'?trainRes(o,p):busRes(o,p)).then(function(r){RC.tr[key]=r},function(e){RC.tr[key]={err:typeof e==='string'?e:'Not available for this trip.'}}).then(renderRoutes);return}
  if(c.err){L.innerHTML='<div class="empty"></div>';L.firstChild.textContent=c.err;return}
  L.innerHTML='<div style="font-weight:600;margin-bottom:6px">About '+fmt(c.dur)+'</div>'+flowHtml(c.flow)+'<div class="mu">'+esc(c.note||'')+'</div>';
  var sb=document.createElement('button');sb.textContent='Show on map';sb.style.marginTop='8px';sb.onclick=function(){legs=c.segs;fitSegs();draw();if(narrow())sheet('half')};L.appendChild(sb)}
 function renderList(){
+ var dy=$('didyou');dy.innerHTML='';if(dest&&dest.q&&dest.alts&&$('detail').hidden)dy.appendChild(didYou(dest,dest.q,function(){$('q').value=dest.q;search()}));
  renderRoutes();
  renderTripbar();
  var box=$('items');box.innerHTML='';var mixed=0,road=0,rmin=0,allRoad=!!tour,todo=0,done=0,ND=nDays(dest),lastDay=-1;renderDaybar();
@@ -804,7 +828,7 @@ function wiki(n,d){
   r[2].forEach(function(q){var i=q.imageinfo&&q.imageinfo[0];if(i&&ok(q.title)&&/video|webm|ogg/.test(i.mime))o.videos.push(i.url)});
   det[n]=o;return o});
 }
-var MD={foot:['\ud83d\udeb6','Walk','#00acc1'],bike:['\ud83d\udeb2','Bike','#fb8c00'],car:['\ud83d\ude97','Car','#e53935'],train:['\ud83d\ude86','Train','#8e24aa'],bus:['\ud83d\ude8c','Bus','#00897b']};
+var MD={foot:['\ud83d\udeb6','Walk','#00acc1'],bike:['\ud83d\udeb2','Cycle','#fb8c00'],moto:['\ud83c\udfcd','Bike','#6d4c41'],car:['\ud83d\ude97','Car','#e53935'],train:['\ud83d\ude86','Train','#8e24aa'],bus:['\ud83d\ude8c','Bus','#00897b']};
 function mk(l,a,b,c){var pts=l.pts,L=pts.length-1;
  return {dist:l.km,dur:l.min,pts:pts,steps:l.steps,
   segs:[{pts:[[a.a,a.o],pts[0]],c:c,dash:1},{pts:pts,c:c},{pts:[pts[L],[b.a,b.o]],c:c,dash:1}],
@@ -886,7 +910,7 @@ function showDetail(i){
   job.then(function(r){res[m]=r;b.textContent=MD[m][0]+' '+(r.label||fmt(r.dur)+' \u00b7 '+r.dist.toFixed(1)+' km');
    if((!chosen||(m==='car'&&chosen!=='car'&&!online()))&&D.dataset.i==i&&!D.hidden)pick(m)})
   .catch(function(e){res[m]={err:typeof e==='string'?e:MD[m][1]+' directions are not available for this place.'};b.textContent=MD[m][0]+' \u2014';
-   if(++fails===5)D.querySelector('.ds').textContent=online()?'No route found for this place.':'This route was not saved for offline use. Straight-line distance is shown above.'});
+   if(++fails===Object.keys(MD).length)D.querySelector('.ds').textContent=online()?'No route found for this place.':'This route was not saved for offline use. Straight-line distance is shown above.'});
  });
 }
 
@@ -1003,7 +1027,7 @@ function search(){
    say('Finding the road route\u2026');loader(true,'Planning the road route',(s.name||'Start')+' \u2192 '+d.name);
    return altRoutes(s,d).then(function(L){if(L.length)d.route=mkRoute(L,0);return d},function(){return d});
   });
- }).then(function(d){d.sel=null;var fn=farNote(d.from,d);d=mkTrip(d,{quick:true});saveTrip(d);ls('cur:'+UID,d.id);note=fn;if(partial)note+='OpenStreetMap was busy, so this list may miss some places \u2014 tap Go again later for the full list.';load(d);sheet('half');if(narrow())barMin(true);if(!d.places.length)say('No tourist places found here. Try a bigger radius (\u22ef).')})
+ }).then(function(d){d.sel=null;d.q=q;var fn=farNote(d.from,d);d=mkTrip(d,{quick:true});saveTrip(d);ls('cur:'+UID,d.id);note=fn;if(partial)note+='OpenStreetMap was busy, so this list may miss some places \u2014 tap Go again later for the full list.';load(d);sheet('half');if(narrow())barMin(true);if(!d.places.length)say('No tourist places found here. Try a bigger radius (\u22ef).')})
  .catch(function(e){var m=typeof e==='string'?e:'Search failed. Check your internet connection and tap Go again.';
   return findSaved(q).then(function(sd){if(sd){note=m+' Showing your saved copy.';openSaved(sd)}else say(m+(dest?' (Still showing your previous trip: '+dest.name+'.)':''))})})
  .then(function(){busy=false;loader(false);btnBusy($('go'),false);busyOff();if($('items').querySelector('.sk'))renderList()},function(){busy=false;loader(false);btnBusy($('go'),false);busyOff();renderList()});
@@ -1265,7 +1289,7 @@ $('tFind').onclick=function(){var s=$('tS').value.trim(),d=$('tD').value.trim(),
  var b=this;btnBusy(b,true,'Finding places\u2026');busyOn();loader(true,'Finding '+d,'Getting the location\u2026');M.textContent='';TP.rp=null;TP.d=null;TP.sel={};TP.live=true;
  $('tRes').hidden=false;$('tResH').textContent='Finding '+d+'\u2026';$('tNote').innerHTML='';$('tPb').hidden=true;$('tShow').hidden=true;$('tList').innerHTML=skel(5);
  geocode(d).then(function(D){return (s&&s!=='My location'?geocode(s,D):Promise.resolve(gpsPos||null)).then(function(S){return [D,S]})}).then(function(r){var D=r[0],S=r[1];TP.far=farNote(S,D);
-  D.route=null;D.from=S?{name:S.name,lat:S.lat,lng:S.lng}:null;D.places=[];$('tResH').textContent='Finding tourist places in '+D.name+'\u2026';loader(true,'Finding tourist places in '+D.name,'Checking our database first\u2026');
+  D.route=null;D.from=S?{name:S.name,lat:S.lat,lng:S.lng}:null;D.places=[];TP.q=d;$('tResH').textContent='Finding tourist places in '+D.name+'\u2026';loader(true,'Finding tourist places in '+D.name,'Checking our database first\u2026');
   return fetchPlaces(D.lat,D.lng,+$('tR').value,function(st){loaderSrc(st);$('tNote').innerHTML=srcHtml(st.src);if(st.list.length){loader(false);D.places=st.list;TP.d=D;renderTP()}},{q:d}).then(function(p){D.places=p;TP.d=D;TP.part=partial;TP.live=false;TP.fromDb=lastFromDb;TP.R=+$('tR').value;
    TP.rp=S&&hav(S.lat,S.lng,D.lat,D.lng)>=3?altRoutes(S,D).then(function(L){if(L.length)D.route=mkRoute(L,0)}).catch(function(){}):null;
    renderTP()})})
@@ -1276,7 +1300,8 @@ function moreSources(){var D=TP.d;if(!D)return;TP.live=true;TP.fromDb=false;busy
 function renderTP(){var D=TP.d,box=$('tList'),fresh=!box.querySelector('.it');$('tRes').hidden=false;box.innerHTML='';
  if(!D.places.length){$('tResH').textContent='No tourist places found in '+D.name+'. Try a bigger radius.';$('tShow').hidden=true;$('tPb').hidden=true;return}
  $('tPb').hidden=false;$('tResH').textContent=D.places.length+' places in '+D.name+(TP.live?' so far':'')+' \u2014 tick the ones you want to visit';
- if(!TP.live)$('tNote').textContent=(TP.far||'')+(TP.part?'OpenStreetMap was slow, so this list may miss some places \u2014 search again later for the full list.':'');if(!TP.live&&TP.fromDb){var mo=document.createElement('a');mo.href='#';mo.textContent=' Not seeing a place? Search all sources';mo.onclick=function(e){e.preventDefault();moreSources()};$('tNote').appendChild(mo)}
+ if(!TP.live&&D.alts&&TP.q){$('tNote').innerHTML='';$('tNote').appendChild(didYou(D,TP.q,function(){$('tD').value=TP.q;$('tFind').click()}))}
+ if(!TP.live&&!(D.alts&&TP.q))$('tNote').textContent=(TP.far||'')+(TP.part?'OpenStreetMap was slow, so this list may miss some places \u2014 search again later for the full list.':'');if(!TP.live&&TP.fromDb){var mo=document.createElement('a');mo.href='#';mo.textContent=' Not seeing a place? Search all sources';mo.onclick=function(e){e.preventDefault();moreSources()};$('tNote').appendChild(mo)}
  D.places.slice().sort(function(a,b){return a.d-b.d}).forEach(function(p){var k=vk(p),row=document.createElement('label');row.className='it';
   row.innerHTML='<input type="checkbox" class="ck"><div style="flex:1;min-width:0"><b></b><small></small></div><div class="d"></div>';
   var c=row.querySelector('input');c.checked=!!TP.sel[k];c.onchange=function(){if(c.checked)TP.sel[k]=1;else delete TP.sel[k];updTP()};
@@ -1485,8 +1510,10 @@ function showOnMap(n,a,o){go('map');pinPt={a:+a,o:+o,review:true,n:n};pinbar();f
 function reqCard(r,st){var c=document.createElement('div');c.className='card';var drop=[];
  c.innerHTML='<div class="hs top"></div><div class="md0"></div>'+(st==='pending'?
   '<label class="fld mt">Place name<input class="nm"></label><label class="fld mt">Category<select class="ct"></select></label><label class="fld mt">Description<textarea class="ds" rows="3"></textarea></label><label class="fld mt">Note to the traveller (optional)<input class="nt" placeholder="e.g. Thanks! Added with a corrected name"></label>'+
-  '<div class="r mt"><button class="p ok">\u2713 Approve &amp; publish</button><button class="no">\u2715 Reject</button><button class="mp">\ud83d\uddfa Show on map</button></div><div class="mu er"></div>':
-  '<b class="nm2"></b><div class="hs rv"></div><div class="r mt"><button class="mp">\ud83d\uddfa Show on map</button></div>');
+  '<div class="r mt"><button class="p ok">\u2713 Approve &amp; publish</button><button class="no">\u2715 Reject</button><button class="mp">\ud83d\uddfa Show on map</button><button class="del">\ud83d\uddd1 Delete</button></div><div class="mu er"></div>':
+  '<b class="nm2"></b><div class="hs rv"></div><div class="r mt"><button class="mp">\ud83d\uddfa Show on map</button><button class="del">\ud83d\uddd1 Delete</button></div>');
+ var dl=c.querySelector('.del');dl.onclick=function(){if(!confirm('Delete \u201c'+r.name+'\u201d from '+r.email+' for good? Its photos and videos are moved to the Drive bin.'+(st==='approved'?'\n\nThe published place stays live \u2014 hide it under Live places if needed.':'')))return;
+  dl.disabled=true;api('deleteReq',{id:r.id}).then(function(){c.remove();toast('Request deleted');if(!$('adList').children.length)renderAdmin()}).catch(function(e){dl.disabled=false;toast(String(e))})};
  c.querySelector('.top').textContent='From '+r.email+' \u00b7 '+ft(new Date(r.created).getTime())+' \u00b7 \ud83d\udccd '+(+r.lat).toFixed(5)+', '+(+r.lng).toFixed(5);
  c.querySelector('.md0').appendChild(mediaStrip(r.media,st==='pending'?drop:null));
  c.querySelector('.mp').onclick=function(){showOnMap(r.name,r.lat,r.lng)};
