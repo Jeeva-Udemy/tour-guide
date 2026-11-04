@@ -81,7 +81,7 @@ textarea{width:100%;resize:vertical;min-height:70px}
 #mB .fld{margin-top:10px}.merr{color:#e5534b;font-size:13px;margin-top:8px}.merr:empty{display:none}
 .mbt{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}.mbt button{min-width:100px;min-height:44px}.mbt .danger{background:#d93025;border-color:#d93025;color:#fff}
 .mbusy{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 0 4px;font-size:14px;color:var(--mu)}.mbusy .ring{margin:0 auto}
-.feeline{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:14px;flex-wrap:wrap}.feeline button{min-height:34px;font-size:13px;padding:3px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{min-height:36px;padding:4px 11px;font-size:13px;border-radius:18px;text-align:left;line-height:1.2}.chips button small{display:block;font-size:10.5px;opacity:.75}.chips button.on{background:var(--ac);color:#fff;border-color:var(--ac);outline:none}.chips button i{font-style:normal;font-size:10px;background:#fff3;border-radius:6px;padding:0 4px;margin-left:3px}.sea{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.sea:first-child{border-top:0}.sea>div:first-child{flex:1;min-width:0}.sea small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}.sea .r{flex:none;display:flex;flex-direction:column;gap:6px}.sea .r button{min-height:36px;font-size:13px;padding:4px 10px}.rm button small{display:block;font-size:11px;opacity:.8;font-weight:400}.feeline{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:14px;flex-wrap:wrap}.feeline button{min-height:34px;font-size:13px;padding:3px 10px}
 #topbar{position:fixed;left:0;right:0;top:0;height:3px;z-index:80;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .25s}
 #topbar.on{opacity:1}#topbar::before{content:'';position:absolute;top:0;bottom:0;width:38%;background:var(--ac);border-radius:3px;animation:tbar 1.1s ease-in-out infinite}
 @keyframes tbar{0%{left:-38%}100%{left:100%}}
@@ -200,6 +200,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
    <div id="tList"></div>
    <button id="tShow" class="p" style="width:100%;position:sticky;bottom:8px;box-shadow:0 2px 10px #0005">Show route on map</button>
   </div>
+  <h2>Seasonal ideas</h2><div class="card" id="seaCard"><div class="chips" id="seaPick" role="group" aria-label="Season"></div><div class="mu" id="seaH" style="margin:10px 0 2px"></div><div id="seaList"></div><button id="seaMore" hidden style="width:100%;margin-top:8px">Show more</button></div>
   <h2>Your trips</h2><div id="tTrips"></div>
   <div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px"><h2 style="margin:0;flex:1">My place suggestions</h2><button id="tSug" class="p"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.6a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.6"/></svg> Suggest a place</button></div><div id="mySug"></div>
  </div></div>
@@ -212,6 +213,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
    <label class="fld mt">Property type<select id="sgOwn"><option value="public" selected>Public property &#x2014; government / open to all</option><option value="private">Private property &#x2014; owned by a person or business</option></select></label>
    <label class="fld mt">What is special here? (optional)<textarea id="sgDesc" rows="3" maxlength="2000" placeholder="How to reach, best time to visit, tips&#x2026;"></textarea></label>
    <div class="fld mt">Entry fee (optional)<div id="sgFee"></div></div>
+   <div class="fld mt">Best time to visit (optional)<div id="sgTime"></div></div>
    <div class="fld mt">Photos &amp; videos<div class="r"><label class="upl"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg> Add photos<input id="sgPh" type="file" accept="image/*" multiple></label><label class="upl"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/></svg> Add video<input id="sgVd" type="file" accept="video/*"></label></div>
     <span id="sgCount"></span><div id="sgThumbs"></div></div>
   </div>
@@ -793,14 +795,25 @@ function pickAlt(k){if(!dest||!route||!route.alts)return;dest.route=mkRoute(rout
 function refreshRoutes(btn){if(!dest||!dest.from)return;btnBusy(btn,true);busyOn();altRoutes(dest.from,dest).then(function(L){if(!L.length)return;var old=route&&route.min;dest.route=mkRoute(L,0);route=dest.route;saveTrip(dest);draw();renderRoutes();
  toast('Updated with live traffic \u2014 fastest is '+fmt(route.min)+(route.via?' via '+route.via:'')+(old&&Math.abs(old-route.min)>=1?' ('+(route.min<old?'-':'+')+fmt(Math.abs(old-route.min))+')':''))}).catch(function(){toast('Could not refresh the route right now')}).then(function(){btnBusy(btn,false);busyOff()})}
 function flowHtml(F){return '<div class="flow">'+F.map(function(f){return '<div class="fl"><span class="ic2">'+f.ic+'</span><div><b>'+esc(f.t)+'</b><small>'+esc(f.s||'')+'</small>'+(f.a?'<a href="'+esc(f.a[1])+'" target="_blank" rel="noopener">'+esc(f.a[0])+' \u2197</a>':'')+'</div></div>'}).join('')+'</div>'}
+function modeFetch(m){var o={a:dest.from.lat,o:dest.from.lng,n:dest.from.name},p={a:dest.lat,o:dest.lng,n:dest.name},key=m+':'+o.a+','+o.o+'>'+p.a+','+p.o;
+ if(RC.tr[key])return Promise.resolve(RC.tr[key]);RC.pend=RC.pend||{};if(RC.pend[key])return RC.pend[key];
+ var pr=(m==='bike'?altRoutes(dest.from,dest,'motorcycle').then(function(A){if(!A||!A.length)throw 0;return {list:A,sel:0}}).catch(function(){return {err:'No motorbike route found.'}})
+  :(m==='train'?trainRes(o,p):busRes(o,p)).catch(function(e){return {err:typeof e==='string'?e:'Not available for this trip.'}}))
+  .then(function(r){RC.tr[key]=r;delete RC.pend[key];return r});
+ RC.pend[key]=pr;return pr}
+function modeTime(m){if(!dest||!dest.from)return '';if(m==='car')return route?fmt(route.min):'';var c=RC.tr[m+':'+dest.from.lat+','+dest.from.lng+'>'+dest.lat+','+dest.lng];
+ if(!c)return '\u2026';if(c.err)return '\u2014';return c.list?fmt(c.list[0].min):c.dur?fmt(c.dur):''}
+function prefetchModes(){if(!dest||!dest.from||!route||!online())return;var sig=dest.from.lat+','+dest.from.lng+'>'+dest.lat+','+dest.lng;if(RC.pre===sig)return;RC.pre=sig;
+ var d=dest;setTimeout(function(){['train','bus','bike'].reduce(function(pr,m){return pr.then(function(){if(dest!==d||!online())return;return modeFetch(m).then(function(){if(dest===d&&RC.open&&!$('routes').hidden)renderRoutes()})})},Promise.resolve())},700)}
 function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.pts||!$('detail').hidden){B.hidden=true;return}B.hidden=false;
  var AL=route.alts&&route.alts.length?route.alts:[route],tt=trafficTxt(route);
  B.innerHTML='<div class="rh"><div class="sum"></div><button class="rf" title="Refresh with live traffic" aria-label="Refresh with live traffic">'+IC.refresh+'</button><button class="tgl" aria-label="'+(RC.open?'Hide':'Show')+' route options">'+(RC.open?IC.up:IC.down)+'</button></div>'+(RC.open?'<div class="rb"><div class="rm"><button data-m="car">\ud83d\ude97 Car</button><button data-m="train">\ud83d\ude86 Train</button><button data-m="bus">\ud83d\ude8c Bus</button><button data-m="bike">\ud83c\udfcd Bike</button></div><div class="rl"></div></div>':'');
  B.querySelector('.sum').innerHTML='<b>'+esc(dest.from.name)+' \u2192 '+esc(dest.name)+'</b> \u00b7 '+(RC.mode==='car'?'\ud83d\ude97 '+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km':RC.mode==='train'?'\ud83d\ude86 Train':RC.mode==='bike'?'\ud83c\udfcd Bike':'\ud83d\ude8c Bus')+'<small>'+(RC.mode==='car'?esc((route.via?'via '+route.via+' \u00b7 ':'')+tt[1]+' \u00b7 '+AL.length+' route'+(AL.length>1?'s':'')):RC.mode==='bike'?'Two-wheeler routes':'Step-by-step directions')+'</small>';
  B.querySelector('.rh').onclick=function(e){if(e.target.closest('.rf'))return;RC.open=!RC.open;renderRoutes()};
  B.querySelector('.rf').onclick=function(e){e.stopPropagation();refreshRoutes(this)};
+ prefetchModes();
  if(!RC.open)return;
- B.querySelectorAll('.rm button').forEach(function(b){b.classList.toggle('on',b.dataset.m===RC.mode);b.onclick=function(){RC.mode=b.dataset.m;if(RC.mode==='car'){legs=[];draw()}renderRoutes()}});
+ B.querySelectorAll('.rm button').forEach(function(b){b.classList.toggle('on',b.dataset.m===RC.mode);var mt=modeTime(b.dataset.m);if(mt){var sm=document.createElement('small');sm.textContent=mt;b.appendChild(sm)}b.onclick=function(){RC.mode=b.dataset.m;if(RC.mode==='car'){legs=[];draw()}renderRoutes()}});
  var L=B.querySelector('.rl'),o={a:dest.from.lat,o:dest.from.lng,n:dest.from.name},p={a:dest.lat,o:dest.lng,n:dest.name};
  if(RC.mode==='car'){AL.forEach(function(a,k){var t=trafficTxt(a),d=document.createElement('div');d.className='ro'+(k===route.sel?' sel':'');
    d.innerHTML='<div class="t1"><b>'+fmt(a.min)+'</b>'+(k===0&&AL.length>1?'<span class="tg2">Fastest</span>':'')+'<small>'+a.km.toFixed(1)+' km'+(a.via?' \u00b7 via '+esc(a.via):'')+'</small></div><div class="trf '+t[0]+'">'+esc(t[1])+'</div>';
@@ -808,14 +821,14 @@ function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.p
   if(route.src==='tomtom'){var n=document.createElement('div');n.className='mu';n.textContent='Times include live traffic. Orange/red on the blue line = slow traffic. Tap \u21bb before you leave.';L.appendChild(n)}return}
  var key=RC.mode+':'+o.a+','+o.o+'>'+p.a+','+p.o,c=RC.tr[key];
  if(RC.mode==='bike'){if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Finding motorbike routes\u2026</div>';
-   altRoutes(dest.from,dest,'motorcycle').then(function(A){RC.tr[key]={list:A,sel:0}},function(){RC.tr[key]={err:'No motorbike route found.'}}).then(renderRoutes);return}
+   modeFetch('bike').then(function(){if(RC.mode==='bike')renderRoutes()});return}
   if(c.err){L.textContent=c.err;return}
   c.list.forEach(function(a,k){var t=trafficTxt(a),d=document.createElement('div');d.className='ro'+(k===c.sel?' sel':'');
    d.innerHTML='<div class="t1"><b>'+fmt(a.min)+'</b>'+(k===0&&c.list.length>1?'<span class="tg2">Fastest</span>':'')+'<small>'+a.km.toFixed(1)+' km'+(a.via?' \u00b7 via '+esc(a.via):'')+'</small></div><div class="trf '+t[0]+'">'+esc(t[1])+'</div>';
    d.onclick=function(){c.sel=k;legs=[{pts:a.pts,c:'#6d4c41'}];fitSegs();draw();renderRoutes()};L.appendChild(d)});
   var bn=document.createElement('div');bn.className='mu';bn.textContent='Two-wheeler routes'+(c.list[0]&&c.list[0].src==='tomtom'?' with live traffic':'')+'. Tap a route to see it on the map.';L.appendChild(bn);return}
  if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Working out the '+RC.mode+' journey\u2026</div>';
-  (RC.mode==='train'?trainRes(o,p):busRes(o,p)).then(function(r){RC.tr[key]=r},function(e){RC.tr[key]={err:typeof e==='string'?e:'Not available for this trip.'}}).then(renderRoutes);return}
+  var mm=RC.mode;modeFetch(mm).then(function(){if(RC.mode===mm)renderRoutes()});return}
  if(c.err){L.innerHTML='<div class="empty"></div>';L.firstChild.textContent=c.err;return}
  L.innerHTML='<div style="font-weight:600;margin-bottom:6px">About '+fmt(c.dur)+'</div>'+flowHtml(c.flow)+'<div class="mu">'+esc(c.note||'')+'</div>';
  var sb=document.createElement('button');sb.textContent='Show on map';sb.style.marginTop='8px';sb.onclick=function(){legs=c.segs;fitSegs();draw();if(narrow())sheet('half')};L.appendChild(sb)}
@@ -832,7 +845,7 @@ function renderList(){
   var d=document.createElement('div');d.className='it'+(i===selected?' sel':'');
   d.innerHTML='<div class="n"></div><div><b></b><small></small><small>Tap for photos, video &amp; directions</small></div><div class="d"></div>';
   d.querySelector('.n').textContent=i+1;d.querySelector('b').textContent=o.p.n;
-  d.querySelector('small').textContent=o.p.t+(o.p.own==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(o.p.fee?' \u00b7 \ud83c\udf9f '+o.p.fee:'');
+  d.querySelector('small').textContent=o.p.t+(o.p.own==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(o.p.fee?' \u00b7 \ud83c\udf9f '+o.p.fee:'')+(o.p.season?' \u00b7 '+(keys(o.p.season).indexOf(tripSeason())<0?'\u26a0 ':'\ud83d\uddd3 ')+'Best: '+seasTxt(o.p.season):'');
   d.querySelector('.d').innerHTML='<b></b><br><span></span>';
   d.querySelector('.d').children[0].textContent=distTxt(o.p);
   d.querySelector('.d').children[2].textContent=(rd?l.km.toFixed(1)+' km':'\u2248 '+o.leg.toFixed(1)+' km')+' from '+(i?'#'+i:'start')+(rd?' \u00b7 '+fmt(l.min):'');
@@ -920,10 +933,41 @@ function reportFee(p,after){var fb=feeBox(),w=document.createElement('div');w.ap
   if(!sess||sess.guest){uiErr('Please sign in with Google first, so the admin knows who sent it.');return false}
   return withTok().then(function(){return api('submitFee',{req:{name:p.n,lat:p.a,lng:p.o,category:p.t,fee:v}})})}}).then(function(ok){if(!ok)return;
   toast(p.pid?'Entry fee saved':'Thanks! The admin will check the entry fee.');if(after)after();loadMine()})}
+var SEAS=[{k:'summer',n:'Summer',m:'Mar\u2013May',ic:'\u2600\ufe0f'},{k:'monsoon',n:'Monsoon',m:'Jun\u2013Sep',ic:'\ud83c\udf27\ufe0f'},{k:'autumn',n:'Post-monsoon',m:'Oct\u2013Nov',ic:'\ud83c\udf42'},{k:'winter',n:'Winter',m:'Dec\u2013Feb',ic:'\u2744\ufe0f'}],
+ TODS=[{k:'morning',n:'Morning',ic:'\ud83c\udf05'},{k:'day',n:'Daytime',ic:'\ud83c\udf1e'},{k:'evening',n:'Evening',ic:'\ud83c\udf07'},{k:'night',n:'Night',ic:'\ud83c\udf19'}];
+function seasonOf(d){var m=(d||new Date()).getMonth()+1;return m>=3&&m<=5?'summer':m>=6&&m<=9?'monsoon':m>=10&&m<=11?'autumn':'winter'}
+function sv(k){return SEAS.filter(function(x){return x.k===k})[0]}
+function keys(v){return String(v||'').split(',').filter(String)}
+function seasTxt(v){return keys(v).map(function(k){var x=sv(k);return x?x.n:''}).filter(String).join(', ')}
+function todTxt(v){return keys(v).map(function(k){var t=TODS.filter(function(x){return x.k===k})[0];return t?t.n:''}).filter(String).join(', ')}
+function tripSeason(){return dest&&dest.dFrom?seasonOf(new Date(dest.dFrom+'T12:00:00')):seasonOf()}
+function chips(L){var w=document.createElement('div');w.className='chips';
+ L.forEach(function(x){var b=document.createElement('button');b.type='button';b.dataset.k=x.k;b.innerHTML=x.ic+' '+esc(x.n)+(x.m?'<small>'+esc(x.m)+'</small>':'');b.setAttribute('aria-pressed','false');
+  b.onclick=function(){var on=!b.classList.contains('on');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)};w.appendChild(b)});
+ var o={el:w,val:function(){return [].filter.call(w.children,function(b){return b.classList.contains('on')}).map(function(b){return b.dataset.k}).join(',')},
+  set:function(v){var K=keys(v);[].forEach.call(w.children,function(b){var on=K.indexOf(b.dataset.k)>-1;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}};
+ o.reset=function(){o.set('')};return o}
+function timeForm(p){var w=document.createElement('div'),S=chips(SEAS),T=chips(TODS);S.set(p&&p.season);T.set(p&&p.tod);
+ var h1=document.createElement('div');h1.className='mu';h1.style.margin='4px 0';h1.textContent='Best season (choose any)';w.appendChild(h1);w.appendChild(S.el);
+ var h2=document.createElement('div');h2.className='mu';h2.style.margin='10px 0 4px';h2.textContent='Best time of day';w.appendChild(h2);w.appendChild(T.el);
+ var tp=document.createElement('input');tp.maxLength=200;tp.className='tip';tp.placeholder='Tip (optional), e.g. Go before 9 am to beat the crowds';tp.style.cssText='margin-top:10px;width:100%';tp.value=p&&p.tip||'';w.appendChild(tp);
+ return {el:w,S:S,T:T,val:function(){return {season:S.val(),tod:T.val(),tip:tp.value.trim()}},reset:function(){S.reset();T.reset();tp.value=''}}}
+function timeLine(el,p){var has=p.season||p.tod;el.innerHTML='<span></span><button>'+(has?'Update':'Suggest best time')+'</button>';
+ var t=has?'\ud83d\uddd3 Best time: '+[seasTxt(p.season),todTxt(p.tod)].filter(String).join(' \u00b7 ')+(p.tip?' \u2014 '+p.tip:''):'\ud83d\uddd3 Best time to visit not known yet',ts=tripSeason();
+ if(p.season&&keys(p.season).indexOf(ts)<0)t+=' \u00b7 \u26a0 not at its best in '+sv(ts).n.toLowerCase();
+ el.firstChild.textContent=t;el.querySelector('button').onclick=function(){reportTime(p,function(){timeLine(el,p);renderList()})}}
+function reportTime(p,after){var f=timeForm(p);
+ uiModal({title:'Best time to visit '+p.n,msg:p.pid?'Saved with your private place.':'When is it best to go? An admin checks it before everyone sees it.',body:f.el,ok:p.pid?'Save':'Send',busy:'Sending\u2026',action:function(){var v=f.val();
+  if(!v.season&&!v.tod){uiErr('Choose at least one season or time of day.');return false}
+  if(p.pid){saveMyPlaces(myPlaces().map(function(m){if(m.id===p.pid){m.season=v.season;m.tod=v.tod;m.tip=v.tip}return m}));p.season=v.season;p.tod=v.tod;p.tip=v.tip;return}
+  if(!sess||sess.guest){uiErr('Please sign in with Google first, so the admin knows who sent it.');return false}
+  return withTok().then(function(){return api('submitTime',{req:{name:p.n,lat:p.a,lng:p.o,category:p.t,season:v.season,tod:v.tod,tip:v.tip}})})}}).then(function(ok){if(!ok)return;
+  toast(p.pid?'Best time saved':'Thanks! The admin will check it.');if(after)after();loadMine()})}
 var FEES={};
 function loadFees(d){if(!window.burl||!burl()||!online()||!d)return;var k=d.lat.toFixed(2)+','+d.lng.toFixed(2);if(FEES[k]){applyFees(FEES[k]);return}
  fj(burl()+'?action=fees&lat='+d.lat.toFixed(5)+'&lng='+d.lng.toFixed(5)+'&r=60000',{},10000).then(function(j){if(j&&j.ok){FEES[k]=j.fees||[];if(dest===d)applyFees(FEES[k])}}).catch(function(){})}
-function applyFees(F){var ch=0;(dest&&dest.places||[]).forEach(function(p){var f=F.filter(function(x){var d=hav(x.a,x.o,p.a,p.o);return (String(x.n).toLowerCase()===p.n.toLowerCase()&&d<1)||d<0.08})[0];if(f&&p.fee!==f.f){p.fee=f.f;ch++}});if(ch)renderList()}
+function applyFees(F){var ch=0;(dest&&dest.places||[]).forEach(function(p){var f=F.filter(function(x){var d=hav(x.a,x.o,p.a,p.o);return (String(x.n).toLowerCase()===p.n.toLowerCase()&&d<1)||d<0.08})[0];if(!f)return;if(f.f&&p.fee!==f.f){p.fee=f.f;ch++}
+ if((f.s||f.t)&&(p.season!==(f.s||'')||p.tod!==(f.t||'')||p.tip!==(f.p||''))){p.season=f.s||'';p.tod=f.t||'';p.tip=f.p||'';ch++}});if(ch)renderList()}
 function closeDetail(){$('detail').hidden=true;setTimeout(renderRoutes,0);$('tabs').hidden=false;$('items').hidden=tab!=='todo';$('vlist').hidden=tab!=='done';$('plist').hidden=tab!=='pick';legs=[];curRes=null;curTo=null;if(start)draw()}
 function showDetail(i){
  var p=order[i].p,from=i?order[i-1].p:start,D=$('detail'),res={},chosen=null,chips={},fails=0,
@@ -931,12 +975,12 @@ function showDetail(i){
  curTo=p;curRes=null;trk.follow=false;updTrkBtn();
  D.hidden=false;$('items').hidden=true;$('vlist').hidden=true;$('plist').hidden=true;$('tabs').hidden=true;$('routes').hidden=true;D.dataset.i=i;
  if($('app').className!=='full')sheet('half');if(narrow())barMin(true);
- D.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bk">\u2190 All places</button><button class="vw p">\u2713 Mark as viewed</button></div><h3></h3><small style="color:var(--mu)"></small><div class="feeline"></div><div class="ph"><i class="skph"></i><i class="skph"></i></div><p class="tx"><i class="skl" style="width:92%"></i><i class="skl" style="width:80%"></i><i class="skl" style="width:55%"></i></p><div class="vd"></div><b>How to get there</b><div class="md"></div><div class="ds" style="font-size:13px;color:var(--mu);padding:6px 0"><span class="spin"></span> Finding routes\u2026</div>';
+ D.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bk">\u2190 All places</button><button class="vw p">\u2713 Mark as viewed</button></div><h3></h3><small style="color:var(--mu)"></small><div class="feeline"></div><div class="feeline tml"></div><div class="ph"><i class="skph"></i><i class="skph"></i></div><p class="tx"><i class="skl" style="width:92%"></i><i class="skl" style="width:80%"></i><i class="skl" style="width:55%"></i></p><div class="vd"></div><b>How to get there</b><div class="md"></div><div class="ds" style="font-size:13px;color:var(--mu);padding:6px 0"><span class="spin"></span> Finding routes\u2026</div>';
  D.querySelector('.bk').onclick=function(){selected=-1;closeDetail();render()};
  var vwb=D.querySelector('.vw');
  if(isV(p)){vwb.textContent='\u21a9 Mark as not viewed';vwb.classList.remove('p');vwb.onclick=function(){selected=-1;closeDetail();unvisit(vk(p))}}
  else vwb.onclick=function(){markViewed(p)};
- D.querySelector('h3').textContent=(i+1)+'. '+p.n;feeLine(D.querySelector('.feeline'),p);
+ D.querySelector('h3').textContent=(i+1)+'. '+p.n;feeLine(D.querySelector('.feeline'),p);timeLine(D.querySelector('.tml'),p);
  D.querySelector('small').textContent=(nDays(dest)>1?'Day '+(order[i].day+1)+' ('+dayDate(order[i].day)+') \u00b7 ':'')+p.t+(p.own==='private'?' \u00b7 \ud83d\udd12 Private property':'')+' \u00b7 '+distTxt(p)+' \u00b7 '+(tl&&!tl.straight?tl.km.toFixed(1)+' km by road':order[i].leg.toFixed(1)+' km straight-line')+' from '+(i?'#'+i:'start');
  placeInfo(p).then(function(o){
   var ph=D.querySelector('.ph');ph.innerHTML='';
@@ -1344,7 +1388,85 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 
 // ---- Trip page: dates, start, destination \u2192 pick places \u2192 route on map ----
 var TP={d:null,sel:{},rp:null,part:false};
-function renderTripPage(){if(!$('tdF').value){$('tdF').value=today();$('tdT').value=today()}$('tdT').min=$('tdF').value;renderTripsList();renderProf();loadMine()}
+// ---- Seasonal ideas (Trip tab) ----
+var DESTS=[
+['Ooty','Tamil Nadu',11.4102,76.6950,'saw','Hill station','Cool weather, tea gardens and the Nilgiri toy train'],
+['Kodaikanal','Tamil Nadu',10.2381,77.4892,'saw','Hill station','Lake, pine forests and misty viewpoints'],
+['Yercaud','Tamil Nadu',11.7753,78.2093,'saw','Hill station','Quick, quiet hill escape with coffee estates'],
+['Valparai','Tamil Nadu',10.3270,76.9554,'saw','Hill station','Tea estates, wildlife and the 40 hairpin bends'],
+['Courtallam','Tamil Nadu',8.9340,77.2780,'m','Waterfall','Falls are in full flow during the monsoon season'],
+['Hogenakkal','Tamil Nadu',12.1190,77.7760,'aw','Waterfall','Coracle rides once the river settles after the rains'],
+['Rameswaram','Tamil Nadu',9.2876,79.3129,'w','Spiritual','Temple corridors and the Pamban bridge in cool weather'],
+['Kanyakumari','Tamil Nadu',8.0883,77.5385,'aw','Beach','Sunrise and sunset over three seas'],
+['Mahabalipuram','Tamil Nadu',12.6208,80.1945,'w','Heritage','Shore Temple and rock carvings, best when it is cooler'],
+['Madurai','Tamil Nadu',9.9252,78.1198,'w','Heritage','Meenakshi Temple without the summer heat'],
+['Thanjavur','Tamil Nadu',10.7870,79.1378,'w','Heritage','Brihadeeswara Temple in pleasant weather'],
+['Mudumalai','Tamil Nadu',11.5623,76.5345,'saw','Wildlife','Elephants and safaris in the drier months'],
+['Pondicherry','Puducherry',11.9416,79.8083,'w','Beach','French Quarter and beaches after the rains end'],
+['Munnar','Kerala',10.0889,77.0595,'maw','Hill station','Rolling tea hills, greenest after the monsoon'],
+['Wayanad','Kerala',11.6854,76.1320,'maw','Hill station','Forests, caves and falls; lush in the rains'],
+['Thekkady','Kerala',9.6031,77.1615,'maw','Wildlife','Periyar lake boat rides and spice gardens'],
+['Alleppey','Kerala',9.4981,76.3388,'maw','Backwaters','Houseboats on the backwaters'],
+['Athirappilly','Kerala',10.2851,76.5698,'ma','Waterfall','Kerala\u2019s biggest waterfall at full force'],
+['Varkala','Kerala',8.7379,76.7163,'aw','Beach','Cliff-top beach, calm seas after the monsoon'],
+['Kovalam','Kerala',8.4004,76.9787,'aw','Beach','Lighthouse beach in dry, sunny weather'],
+['Coorg','Karnataka',12.4244,75.7382,'maw','Hill station','Coffee estates, Abbey Falls in the rains'],
+['Chikmagalur','Karnataka',13.3161,75.7720,'maw','Hill station','Coffee country and Mullayanagiri peak'],
+['Jog Falls','Karnataka',14.2269,74.7920,'ma','Waterfall','India\u2019s tallest plunge falls, best in the rains'],
+['Hampi','Karnataka',15.3350,76.4600,'aw','Heritage','Ruins and boulder hills, too hot in summer'],
+['Mysuru','Karnataka',12.2958,76.6394,'aw','Heritage','Palace and the Dasara festival season'],
+['Kabini','Karnataka',11.9380,76.3500,'sw','Wildlife','Elephant herds by the backwaters in the dry season'],
+['Gokarna','Karnataka',14.5479,74.3188,'aw','Beach','Quiet beaches and coastal treks'],
+['Goa','Goa',15.4909,73.8278,'aw','Beach','Beaches, forts and festivals in the dry season'],
+['Lonavala','Maharashtra',18.7546,73.4062,'m','Hill station','Waterfalls and misty ghats in the monsoon'],
+['Mahabaleshwar','Maharashtra',17.9237,73.6586,'saw','Hill station','Strawberries and valley viewpoints'],
+['Udaipur','Rajasthan',24.5854,73.7125,'maw','Lake','Lake palaces, lakes full after the rains'],
+['Jaipur','Rajasthan',26.9124,75.7873,'aw','Heritage','Forts and palaces in cool weather'],
+['Jaisalmer','Rajasthan',26.9157,70.9083,'w','Desert','Desert camps and dunes in winter'],
+['Ranthambore','Rajasthan',26.0173,76.5026,'sw','Wildlife','Tiger safaris (park closes in the monsoon)'],
+['Rann of Kutch','Gujarat',23.8340,69.6800,'w','Desert','White salt desert and the Rann Utsav'],
+['Agra','Uttar Pradesh',27.1751,78.0421,'aw','Heritage','Taj Mahal in pleasant weather'],
+['Varanasi','Uttar Pradesh',25.3176,82.9739,'aw','Spiritual','Ghats and the Ganga aarti'],
+['Khajuraho','Madhya Pradesh',24.8318,79.9199,'w','Heritage','Temple carvings, best when it is cool'],
+['Rishikesh','Uttarakhand',30.0869,78.2676,'saw','Spiritual','Yoga, temples and river rafting'],
+['Mussoorie','Uttarakhand',30.4598,78.0644,'sa','Hill station','Escape the summer heat in the hills'],
+['Valley of Flowers','Uttarakhand',30.7280,79.6050,'m','Trek','Alpine meadows bloom only in the monsoon'],
+['Jim Corbett','Uttarakhand',29.5300,78.7747,'sw','Wildlife','Tiger safaris in the dry season'],
+['Shimla','Himachal Pradesh',31.1048,77.1734,'sw','Hill station','Cool summers and snow in winter'],
+['Manali','Himachal Pradesh',32.2432,77.1892,'saw','Hill station','Mountain passes in summer, snow in winter'],
+['Leh','Ladakh',34.1526,77.5771,'sm','Mountains','High passes open; rain-shadow dry in the monsoon'],
+['Darjeeling','West Bengal',27.0410,88.2663,'sa','Hill station','Clear Kanchenjunga views and tea gardens'],
+['Gangtok','Sikkim',27.3389,88.6065,'sa','Hill station','Monasteries and mountain views'],
+['Shillong','Meghalaya',25.5788,91.8933,'saw','Hill station','Pine hills and lakes in mild weather'],
+['Cherrapunji','Meghalaya',25.2702,91.7323,'ma','Waterfall','Waterfalls and living root bridges at their best'],
+['Kaziranga','Assam',26.5775,93.1711,'sw','Wildlife','One-horned rhino safaris (park closes in the monsoon)'],
+['Havelock Island','Andaman & Nicobar',11.9761,92.9876,'sw','Beach','Clear water for snorkelling and diving']];
+var SEA={k:null,n:10,comm:null};
+function loadSeasonal(){SEA.comm=[];if(!window.burl||!burl()||!online())return;
+ fj(burl()+'?action=seasonal',{},12000).then(function(j){if(j&&j.ok){SEA.comm=j.places||[];if(curTab==='trip')renderSeasonal()}}).catch(function(){})}
+function renderSeasonal(){var P=$('seaPick');if(!P)return;var now=seasonOf(),k=SEA.k||now,S=sv(k),LT={s:'summer',m:'monsoon',a:'autumn',w:'winter'};
+ if(!P.children.length)SEAS.forEach(function(x){var b=document.createElement('button');b.type='button';b.dataset.k=x.k;b.onclick=function(){SEA.k=x.k;SEA.n=10;renderSeasonal()};P.appendChild(b)});
+ [].forEach.call(P.children,function(b){var x=sv(b.dataset.k);b.innerHTML=x.ic+' '+x.n+(x.k===now?'<i>now</i>':'')+'<small>'+x.m+'</small>';b.classList.toggle('on',x.k===k);b.setAttribute('aria-pressed',x.k===k)});
+ if(SEA.comm===null)loadSeasonal();
+ var me=gpsPos,L=DESTS.map(function(d){return {n:d[0],st:d[1],a:d[2],o:d[3],s:d[4].split('').map(function(c){return LT[c]}),ty:d[5],why:d[6]}});
+ (SEA.comm||[]).forEach(function(c){var a=+c.a,o=+c.o;if(!isFinite(a)||!isFinite(o))return;if(L.some(function(x){return x.n.toLowerCase()===String(c.n).toLowerCase()||hav(x.a,x.o,a,o)<0.3}))return;
+  L.push({n:String(c.n),st:'',a:a,o:o,s:keys(c.s),ty:(c.c||'Place')+' \u00b7 \u2605 community',why:c.p||(c.t?'Best in the '+todTxt(c.t).toLowerCase():'Suggested by travellers'),comm:1})});
+ L=L.filter(function(x){return x.s.indexOf(k)>-1});
+ L.forEach(function(x){x.km=me?hav(me.lat,me.lng,x.a,x.o):null});
+ if(me)L.sort(function(a,b){return a.km-b.km});
+ $('seaH').textContent=(k===now?'It is '+S.n.toLowerCase()+' now. ':'')+L.length+' place'+(L.length===1?'':'s')+' at their best in '+S.n.toLowerCase()+' ('+S.m+')'+(me?', nearest to you first.':'. Tap \ud83d\udccd in the planner to sort by distance.');
+ var box=$('seaList');box.innerHTML='';
+ L.slice(0,SEA.n).forEach(function(x){var d=document.createElement('div');d.className='sea';
+  d.innerHTML='<div><b></b><small class="w"></small><small class="b"></small></div><div class="r"><button class="p pl">Plan trip</button><button class="mp">Map</button></div>';
+  d.querySelector('b').textContent=x.n;d.querySelector('.w').textContent=[x.st,x.ty].filter(String).join(' \u00b7 ')+' \u2014 '+x.why;
+  d.querySelector('.b').textContent='Best: '+x.s.map(function(q){var z=sv(q);return z?z.n:''}).filter(String).join(', ')+(x.km!=null?' \u00b7 '+(x.km<10?x.km.toFixed(1):Math.round(x.km))+' km away':'');
+  function pin(){var q=x.n.toLowerCase().trim();FG[q]={name:x.n,lat:x.a,lng:x.o,label:x.n+(x.st?', '+x.st:'')};return x.n}
+  d.querySelector('.pl').onclick=function(){$('tD').value=pin();var c=$('tD').closest('.card');c.scrollIntoView({behavior:'smooth',block:'center'});c.style.outline='2px solid var(--ac)';setTimeout(function(){c.style.outline=''},1600);
+   toast('Destination set to '+x.n+' \u2014 choose dates, then tap \u201cFind tourist places\u201d')};
+  d.querySelector('.mp').onclick=function(){$('q').value=pin();go('map');search()};box.appendChild(d)});
+ if(!L.length)box.innerHTML='<div class="empty">No ideas for this season yet.</div>';
+ var mo=$('seaMore');mo.hidden=L.length<=SEA.n;mo.textContent='Show more ('+(L.length-SEA.n)+')';mo.onclick=function(){SEA.n+=10;renderSeasonal()}}
+function renderTripPage(){if(!$('tdF').value){$('tdF').value=today();$('tdT').value=today()}$('tdT').min=$('tdF').value;renderTripsList();renderProf();loadMine();renderSeasonal()}
 $('tSug').onclick=function(){startPin()};
 $('tdF').onchange=function(){$('tdT').min=this.value;if(!$('tdT').value||$('tdT').value<this.value)$('tdT').value=this.value};
 $('tGps').onclick=function(){if(!navigator.geolocation){$('tMsg').textContent='Location is not supported on this device.';return}$('tMsg').textContent='Getting your location\u2026';
@@ -1433,9 +1555,9 @@ function withCommunity(out,lat,lng,R){return community().then(function(C){var ne
  C.forEach(function(c){var a=+c.lat,o=+c.lng,d=hav(lat,lng,a,o);if(!(d*1000<=R))return;
   var ln=String(c.name).toLowerCase(),dup=out.filter(function(q){return q.n.toLowerCase()===ln||hav(q.a,q.o,a,o)<0.15})[0];
   if(dup){dup.media=c.media;dup.desc=c.description;dup.cid=c.id;dup.t=dup.t.indexOf('\u2605')<0?dup.t+' \u00b7 \u2605 community':dup.t}
-  else near.push({n:String(c.name),a:a,o:o,t:(c.category||'place')+' \u00b7 \u2605 community',d:d,media:c.media||[],desc:c.description||'',cid:c.id,fee:c.fee||'',own:c.ownership==='private'?'private':''});if(dup&&c.fee)dup.fee=c.fee});
+  else near.push({n:String(c.name),a:a,o:o,t:(c.category||'place')+' \u00b7 \u2605 community',d:d,media:c.media||[],desc:c.description||'',cid:c.id,fee:c.fee||'',own:c.ownership==='private'?'private':'',season:c.season||'',tod:c.tod||'',tip:c.tip||''});if(dup&&c.fee)dup.fee=c.fee;if(dup&&(c.season||c.tod)){dup.season=c.season||'';dup.tod=c.tod||'';dup.tip=c.tip||''}});
  myPlaces().forEach(function(m){var d=hav(lat,lng,m.a,m.o);if(d*1000>R)return;var ln=m.n.toLowerCase(),dup=out.concat(near).filter(function(q){return q.n.toLowerCase()===ln&&hav(q.a,q.o,m.a,m.o)<0.15})[0];
-  var x={n:m.n,a:m.a,o:m.o,t:(m.t||'place')+' \u00b7 private',d:d,desc:m.desc||'',fee:m.fee||'',pid:m.id,pmedia:m.media||[]};if(dup){for(var k in x)if(k!=='n')dup[k]=x[k]}else near.push(x)});
+  var x={n:m.n,a:m.a,o:m.o,t:(m.t||'place')+' \u00b7 private',d:d,desc:m.desc||'',fee:m.fee,season:m.season||'',tod:m.tod||'',tip:m.tip||''||'',pid:m.id,pmedia:m.media||[]};if(dup){for(var k in x)if(k!=='n')dup[k]=x[k]}else near.push(x)});
  var base=out.filter(function(p){return !p.cid||near.indexOf(p)>-1});return base.slice(0,Math.max(0,40-near.length)).concat(near).sort(function(a,b){return a.d-b.d})})}
 var fetchPlacesBase=fetchPlaces;
 fetchPlaces=function(lat,lng,R,prog,opt){return fetchPlacesBase(lat,lng,R,prog,opt).then(function(o){return withCommunity(o,lat,lng,R)},function(e){
@@ -1472,7 +1594,7 @@ function feeBox(){var w=document.createElement('div');w.className='feebox';
  w.innerHTML='<div class="r"><select class="ft" aria-label="Entry fee"><option value="">Not sure</option><option value="free">Free</option><option value="paid">Paid</option></select><input class="fa" type="number" min="0" step="1" inputmode="numeric" placeholder="Amount in \u20b9" aria-label="Amount"></div><input class="fn" maxlength="80" placeholder="Details (optional), e.g. kids \u20b910, camera \u20b950" style="margin-top:6px;width:100%">';
  var ft=w.querySelector('.ft'),fa=w.querySelector('.fa'),fn=w.querySelector('.fn');function upd(){var p=ft.value==='paid';fa.hidden=!p;fn.hidden=!p}ft.onchange=upd;upd();
  return {el:w,val:function(){if(ft.value==='free')return 'Free';if(ft.value==='paid'){var a=String(fa.value).trim();if(!a)return null;return '\u20b9'+a+(fn.value.trim()?' \u00b7 '+fn.value.trim():'')}return ''},reset:function(){ft.value='';fa.value='';fn.value='';upd()}}}
-SG.fee=feeBox();$('sgFee').appendChild(SG.fee.el);
+SG.fee=feeBox();$('sgFee').appendChild(SG.fee.el);SG.time=timeForm();$('sgTime').appendChild(SG.time.el);
 function sgBtn(){var g=!sess||sess.guest;$('sgSend').textContent=g?'Sign in with Google to send':'Send for review';$('sgGuest').hidden=!g}
 function openSug(){if(!pinPt)return;sugMode=false;pinbar();var V=$('sugv');V.hidden=false;
  $('sgLoc').textContent=pinPt.a.toFixed(5)+', '+pinPt.o.toFixed(5)+(pinPt.acc?' (\u00b1'+Math.round(pinPt.acc)+' m)':'');
@@ -1511,14 +1633,14 @@ $('sgSend').onclick=function(){var M=$('sgMsg'),me=this,own=$('sgOwn').value==='
  SG.noPhotoOk=0;
  var tk=online()&&burl()?withTok():Promise.resolve(),b=this;b.disabled=true;M.textContent='Preparing photos\u2026';
  Promise.all(SG.files.map(function(f){return (f.type.indexOf('image')===0?shrink(f.file):Promise.resolve(f.file)).then(function(bl){return {name:f.name,type:bl.type||f.type,blob:bl}})}))
- .then(function(files){var item={qid:'q'+Date.now(),req:{name:SG.name.trim(),category:SG.cat,description:SG.desc.trim(),lat:pinPt.a,lng:pinPt.o,fee:fee,ownership:own},files:files,created:Date.now(),uid:UID};
+ .then(function(files){var item={qid:'q'+Date.now(),req:{name:SG.name.trim(),category:SG.cat,description:SG.desc.trim(),lat:pinPt.a,lng:pinPt.o,fee:fee,ownership:own,season:SG.time.val().season,tod:SG.time.val().tod,tip:SG.time.val().tip},files:files,created:Date.now(),uid:UID};
   function queue(why){return put('q',item.qid,item).then(function(){M.textContent='';done('Saved on this phone \u2014 it will be sent automatically '+why+'.')})}
   if(!online())return queue('when you are back online');
   if(!burl())return queue('once community places are set up');
   return tk.then(function(){return sendReq(item,function(t){M.textContent=t})}).then(function(){done('Thanks! Your suggestion was sent for review.');loadMine()},
    function(e){if(/internet|reach|offline|Failed/i.test(String(e)))return queue('when the connection is better');throw e})})
  .catch(function(e){M.textContent=typeof e==='string'?e:'Could not send. Please try again.'}).then(function(){b.disabled=false})};
-function done(msg){SG.files.forEach(function(f){URL.revokeObjectURL(f.url)});var fb=SG.fee;fb.reset();$('sgOwn').value='public';SG={files:[],name:'',cat:'',desc:'',fee:fb};pinPt=null;sugMode=false;$('sugv').hidden=true;pinbar();draw();toast(msg,null,null,6000);renderMine()}
+function done(msg){SG.files.forEach(function(f){URL.revokeObjectURL(f.url)});var fb=SG.fee,tm=SG.time;fb.reset();tm.reset();$('sgOwn').value='public';SG={files:[],name:'',cat:'',desc:'',fee:fb,time:tm};pinPt=null;sugMode=false;$('sugv').hidden=true;pinbar();draw();toast(msg,null,null,6000);renderMine()}
 var qBusy=false;
 function flushQueue(){if(qBusy||!sess||sess.guest||!online()||!burl()||!tokValid())return;qBusy=true;
  idb('q','readonly',function(s){return s.getAll()}).then(function(a){var L=(a||[]).filter(function(x){return x.uid===UID}),n=0;
@@ -1536,7 +1658,7 @@ function renderMine(){var box=$('mySug');if(!box)return;
    x.onclick=function(){uiConfirm('Delete this private place?','\u201c'+m.n+'\u201d and its photos on this device will be removed.','Delete',true).then(function(ok){if(ok){delPrivate(m);renderMine();toast('Private place deleted')}})};c.appendChild(x);box.appendChild(c)});
   if(!Q.length&&!M.length&&!P.length){box.innerHTML='<div class="empty">Know a spot we are missing? Tap \u201c\ud83d\udccc Suggest a place\u201d, drop a pin (or use your live location) and add photos or videos. An admin checks it, then it shows up for everyone.</div>'}
   Q.forEach(function(x){box.appendChild(sugCard(x.req.name,x.req.category,'Waiting to send (offline)','',x.created,'',[]))});
-  M.forEach(function(r){var s=ST[r.status]||[r.status,''],fe=r.kind==='fee';box.appendChild(sugCard((fe?'\ud83c\udf9f Entry fee \u00b7 ':'')+r.name,fe?r.fee:(r.category+(r.ownership==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(r.fee?' \u00b7 \ud83c\udf9f '+r.fee:'')),s[0],s[1],new Date(r.created).getTime(),r.adminNote,r.media||[]))})})}
+  M.forEach(function(r){var s=ST[r.status]||[r.status,''],fe=r.kind==='fee',tk=r.kind==='time';box.appendChild(sugCard((fe?'\ud83c\udf9f Entry fee \u00b7 ':tk?'\ud83d\uddd3 Best time \u00b7 ':'')+r.name,tk?[seasTxt(r.season),todTxt(r.tod)].filter(String).join(' \u00b7 '):fe?r.fee:(r.category+(r.ownership==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(r.fee?' \u00b7 \ud83c\udf9f '+r.fee:'')),s[0],s[1],new Date(r.created).getTime(),r.adminNote,r.media||[]))})})}
 function sugCard(n,c,st,cls,t,note,media){var d=document.createElement('div');d.className='card';
  d.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start"><div class="mthumb"></div><div style="flex:1;min-width:0"><b></b><div class="hs"></div></div><span class="badge"></span></div>';
  d.querySelector('b').textContent=n;d.querySelector('.hs').textContent=c+' \u00b7 sent '+ft(t)+(note?' \u00b7 Admin note: '+note:'');
@@ -1593,21 +1715,23 @@ function mediaStrip(media,drop){var w=document.createElement('div');w.className=
 function showOnMap(n,a,o){go('map');pinPt={a:+a,o:+o,review:true,n:n};pinbar();focusOn(+a,+o)}
 function reqCard(r,st){var c=document.createElement('div');c.className='card';var drop=[];
  c.innerHTML='<div class="hs top"></div><div class="md0"></div>'+(st==='pending'?
-  '<label class="fld mt">Place name<input class="nm"></label><label class="fld mt">Category<select class="ct"></select></label><label class="fld mt">Description<textarea class="ds" rows="3"></textarea></label><label class="fld mt">Property type<select class="ow"><option value="public">Public property</option><option value="private">Private property</option></select></label><label class="fld mt">Entry fee<input class="fe" maxlength="120" placeholder="e.g. Free, or \u20b920 \u00b7 kids \u20b910 (leave empty if unknown)"></label><label class="fld mt">Note to the traveller (optional)<input class="nt" placeholder="e.g. Thanks! Added with a corrected name"></label>'+
+  '<label class="fld mt">Place name<input class="nm"></label><label class="fld mt">Category<select class="ct"></select></label><label class="fld mt">Description<textarea class="ds" rows="3"></textarea></label><label class="fld mt">Property type<select class="ow"><option value="public">Public property</option><option value="private">Private property</option></select></label><div class="fld mt tmw">Best time to visit</div><label class="fld mt">Entry fee<input class="fe" maxlength="120" placeholder="e.g. Free, or \u20b920 \u00b7 kids \u20b910 (leave empty if unknown)"></label><label class="fld mt">Note to the traveller (optional)<input class="nt" placeholder="e.g. Thanks! Added with a corrected name"></label>'+
   '<div class="r mt"><button class="p ok">\u2713 Approve &amp; publish</button><button class="no">\u2715 Reject</button><button class="mp">\ud83d\uddfa Show on map</button><button class="del">\ud83d\uddd1 Delete</button></div><div class="mu er"></div>':
   '<b class="nm2"></b><div class="hs rv"></div><div class="r mt"><button class="mp">\ud83d\uddfa Show on map</button><button class="del">\ud83d\uddd1 Delete</button></div>');
  var dl=c.querySelector('.del');dl.onclick=function(){uiModal({title:'Delete this request?',msg:'\u201c'+r.name+'\u201d from '+r.email+' will be removed for good. Its photos and videos move to the Drive bin.'+(st==='approved'&&r.kind!=='fee'?'\n\nThe published place stays live \u2014 hide it under Live places if needed.':''),ok:'Delete',danger:true,busy:'Deleting\u2026',action:function(){return api('deleteReq',{id:r.id})}}).then(function(ok){if(!ok)return;c.remove();toast('Request deleted');if(!$('adList').children.length)renderAdmin()})};
  c.querySelector('.top').textContent='From '+r.email+' \u00b7 '+ft(new Date(r.created).getTime())+' \u00b7 \ud83d\udccd '+(+r.lat).toFixed(5)+', '+(+r.lng).toFixed(5);
  c.querySelector('.md0').appendChild(mediaStrip(r.media,st==='pending'?drop:null));
  c.querySelector('.mp').onclick=function(){showOnMap(r.name,r.lat,r.lng)};
- if(st!=='pending'){c.querySelector('.nm2').textContent=r.kind==='fee'?'\ud83c\udf9f Entry fee \u00b7 '+r.name+' \u00b7 '+r.fee:r.name+' \u00b7 '+r.category+(r.ownership==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(r.fee?' \u00b7 \ud83c\udf9f '+r.fee:'');c.querySelector('.rv').textContent=(r.description?r.description+' \u00b7 ':'')+(st==='approved'?'Approved':'Rejected')+' by '+r.reviewedBy+' on '+ft(new Date(r.reviewedAt).getTime())+(r.adminNote?' \u00b7 Note: '+r.adminNote:'');return c}
+ if(st!=='pending'){c.querySelector('.nm2').textContent=r.kind==='time'?'\ud83d\uddd3 Best time \u00b7 '+r.name+' \u00b7 '+[seasTxt(r.season),todTxt(r.tod)].filter(String).join(' \u00b7 ')+(r.tip?' \u00b7 '+r.tip:''):r.kind==='fee'?'\ud83c\udf9f Entry fee \u00b7 '+r.name+' \u00b7 '+r.fee:r.name+' \u00b7 '+r.category+(r.ownership==='private'?' \u00b7 \ud83d\udd12 Private property':'')+(r.fee?' \u00b7 \ud83c\udf9f '+r.fee:'');c.querySelector('.rv').textContent=(r.description?r.description+' \u00b7 ':'')+(st==='approved'?'Approved':'Rejected')+' by '+r.reviewedBy+' on '+ft(new Date(r.reviewedAt).getTime())+(r.adminNote?' \u00b7 Note: '+r.adminNote:'');return c}
  c.querySelector('.nm').value=r.name;var ct=c.querySelector('.ct');ct.innerHTML=CATS.concat(CATS.indexOf(r.category)<0&&r.category?[r.category]:[]).map(function(x){return '<option>'+esc(x)+'</option>'}).join('');ct.value=r.category||'other';
- c.querySelector('.ds').value=r.description||'';c.querySelector('.fe').value=r.fee||'';c.querySelector('.ow').value=r.ownership==='private'?'private':'public';
+ c.querySelector('.ds').value=r.description||'';c.querySelector('.fe').value=r.fee||'';c.querySelector('.ow').value=r.ownership==='private'?'private':'public';var TF=timeForm(r);c.querySelector('.tmw').appendChild(TF.el);
+ if(r.kind==='fee')c.querySelector('.tmw').hidden=true;
+ if(r.kind==='time'){['.nm','.ct','.ds','.ow','.fe'].forEach(function(q){c.querySelector(q).closest('label').hidden=true});var th=document.createElement('b');th.textContent='\ud83d\uddd3 Best time to visit '+r.name;c.querySelector('.top').after(th);c.querySelector('.ok').textContent='\u2713 Approve best time'}
  if(r.kind==='fee'){['.nm','.ct','.ds','.ow'].forEach(function(q){c.querySelector(q).closest('label').hidden=true});var hd=document.createElement('b');hd.textContent='\ud83c\udf9f Entry fee for '+r.name;c.querySelector('.top').after(hd);c.querySelector('.ok').textContent='\u2713 Approve fee'}
  function act(dec){var er=c.querySelector('.er'),bs=c.querySelectorAll('button');if(dec==='approve'&&!c.querySelector('.nm').value.trim()){er.textContent='Name is required.';return}
-  bs.forEach(function(b){b.disabled=true});er.textContent='';var endB=uiBusy(dec==='approve'?(r.kind==='fee'?'Saving the entry fee\u2026':'Publishing\u2026'):'Rejecting\u2026');
-  api('review',{id:r.id,decision:dec,name:c.querySelector('.nm').value.trim(),category:ct.value,description:c.querySelector('.ds').value.trim(),note:c.querySelector('.nt').value.trim(),fee:c.querySelector('.fe').value.trim(),ownership:c.querySelector('.ow').value,drop:drop}).then(function(x){endB();return x},function(e){endB();throw e})
-  .then(function(){COMM.t=0;community(true);c.remove();toast(dec==='approve'?'\u201c'+r.name+'\u201d is now visible to everyone':'Suggestion rejected');if(!$('adList').children.length)renderAdmin()})
+  bs.forEach(function(b){b.disabled=true});er.textContent='';var endB=uiBusy(dec==='approve'?(r.kind==='fee'?'Saving the entry fee\u2026':r.kind==='time'?'Saving the best time\u2026':'Publishing\u2026'):'Rejecting\u2026');
+  api('review',{id:r.id,decision:dec,name:c.querySelector('.nm').value.trim(),category:ct.value,description:c.querySelector('.ds').value.trim(),note:c.querySelector('.nt').value.trim(),fee:c.querySelector('.fe').value.trim(),ownership:c.querySelector('.ow').value,season:TF.S.val(),tod:TF.T.val(),tip:TF.val().tip,drop:drop}).then(function(x){endB();return x},function(e){endB();throw e})
+  .then(function(){COMM.t=0;community(true);c.remove();FEES={};toast(dec==='approve'?(r.kind==='time'?'Best time saved for \u201c'+r.name+'\u201d':'\u201c'+r.name+'\u201d is now visible to everyone'):'Suggestion rejected');if(!$('adList').children.length)renderAdmin()})
   .catch(function(e){er.textContent=String(e);bs.forEach(function(b){b.disabled=false})})}
  c.querySelector('.ok').onclick=function(){act('approve')};c.querySelector('.no').onclick=function(){if(c.querySelector('.nt').value.trim()){act('reject');return}uiConfirm('Reject without a note?','The traveller will only see \u201cNot added\u201d. Add a note above to tell them why.','Reject',true).then(function(ok){if(ok)act('reject')})};
  return c}
