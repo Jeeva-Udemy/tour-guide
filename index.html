@@ -81,7 +81,7 @@ textarea{width:100%;resize:vertical;min-height:70px}
 #mB .fld{margin-top:10px}.merr{color:#e5534b;font-size:13px;margin-top:8px}.merr:empty{display:none}
 .mbt{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}.mbt button{min-width:100px;min-height:44px}.mbt .danger{background:#d93025;border-color:#d93025;color:#fff}
 .mbusy{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 0 4px;font-size:14px;color:var(--mu)}.mbusy .ring{margin:0 auto}
-.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{min-height:36px;padding:4px 11px;font-size:13px;border-radius:18px;text-align:left;line-height:1.2}.chips button small{display:block;font-size:10.5px;opacity:.75}.chips button.on{background:var(--ac);color:#fff;border-color:var(--ac);outline:none}.chips button i{font-style:normal;font-size:10px;background:#fff3;border-radius:6px;padding:0 4px;margin-left:3px}.sea{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.sea:first-child{border-top:0}.sea>div:first-child{flex:1;min-width:0}.sea small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}.sea .r{flex:none;display:flex;flex-direction:column;gap:6px}.sea .r button{min-height:36px;font-size:13px;padding:4px 10px}.rm button small{display:block;font-size:11px;opacity:.8;font-weight:400}.feeline{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:14px;flex-wrap:wrap}.feeline button{min-height:34px;font-size:13px;padding:3px 10px}
+#stops{display:flex;flex-direction:column;gap:6px}#stops:empty{display:none}.stp .sl{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--rt);color:var(--rt);display:grid;place-items:center;font-size:12px;font-weight:700;align-self:center;background:var(--card)}.stp button{flex:none;min-width:38px;padding:4px 8px}.stp input{min-width:0}.sbtns{gap:6px}.sbtns button{min-height:34px;font-size:13px;padding:3px 10px}.legs{margin-top:8px;font-size:13px;border-top:1px solid var(--bd);padding-top:6px}.legs div{display:flex;gap:8px;padding:3px 0}.legs div span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.legs b{font-weight:600}.ptr{position:absolute;left:50%;top:-46px;margin-left:-20px;width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--bd);box-shadow:0 2px 8px #0004;display:grid;place-items:center;z-index:30;transition:transform .25s;color:var(--mu);pointer-events:none}.ptr svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.ptr.go{color:var(--ac)}.ptr .spin{display:none;width:18px;height:18px;color:var(--ac)}.ptr.run svg{display:none}.ptr.run .spin{display:inline-block}.page{overscroll-behavior-y:contain}#seaPop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:60;background:#0008;display:flex;align-items:flex-end;justify-content:center}#seaPop[hidden]{display:none}#seaPop .spc{background:var(--bg);width:100%;max-width:680px;max-height:88vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}@media(min-width:700px){#seaPop{align-items:center}#seaPop .spc{border-radius:16px}}#seaPop .sph{display:flex;align-items:center;gap:8px;padding:14px 14px 8px}#seaPop .sph b{flex:1;font-size:18px}#seaPop .spb{overflow:auto;padding:0 14px 14px;-webkit-overflow-scrolling:touch}.icb{width:42px;height:42px;min-height:42px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:20px;flex:none}.sy.on::before{content:"";display:inline-block;width:9px;height:9px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;margin-right:6px;vertical-align:-1px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{min-height:36px;padding:4px 11px;font-size:13px;border-radius:18px;text-align:left;line-height:1.2}.chips button small{display:block;font-size:10.5px;opacity:.75}.chips button.on{background:var(--ac);color:#fff;border-color:var(--ac);outline:none}.chips button i{font-style:normal;font-size:10px;background:#fff3;border-radius:6px;padding:0 4px;margin-left:3px}.sea{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.sea:first-child{border-top:0}.sea>div:first-child{flex:1;min-width:0}.sea small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}.sea .r{flex:none;display:flex;flex-direction:column;gap:6px}.sea .r button{min-height:36px;font-size:13px;padding:4px 10px}.rm button small{display:block;font-size:11px;opacity:.8;font-weight:400}.feeline{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:14px;flex-wrap:wrap}.feeline button{min-height:34px;font-size:13px;padding:3px 10px}
 #topbar{position:fixed;left:0;right:0;top:0;height:3px;z-index:80;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .25s}
 #topbar.on{opacity:1}#topbar::before{content:'';position:absolute;top:0;bottom:0;width:38%;background:var(--ac);border-radius:3px;animation:tbar 1.1s ease-in-out infinite}
 @keyframes tbar{0%{left:-38%}100%{left:100%}}
@@ -159,6 +159,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
 <body>
 <div id="topbar"></div>
 <div id="modal" hidden><div class="mc" role="dialog" aria-modal="true" aria-labelledby="mT"><b id="mT"></b><div id="mM" class="mmsg"></div><div id="mB"></div><div id="mE" class="merr"></div><div class="mbt"><button id="mC">Cancel</button><button id="mO" class="p">OK</button></div><div class="mbusy" hidden><div class="ring"></div><span></span></div></div></div>
+<div id="seaPop" hidden role="dialog" aria-modal="true" aria-labelledby="seaT"><div class="spc"><div class="sph"><b id="seaT">&#x1f326;&#xfe0f; Seasonal ideas</b><button id="seaX" class="icb" aria-label="Close">&#x2715;</button></div><div class="spb" id="seaCard"><div class="chips" id="seaPick" role="group" aria-label="Season"></div><div class="mu" id="seaH" style="margin:10px 0 2px"></div><div id="seaList"></div><button id="seaMore" hidden style="width:100%;margin-top:8px">Show more</button></div></div></div>
 <div id="loader" hidden role="status" aria-live="polite"><div class="lc"><div class="ring"></div><b id="ldT"></b><div class="mu" id="ldS"></div><div id="ldSrc"></div><div class="cnt" id="ldC"></div></div></div>
 <div id="app" class="peek">
  <div id="mapw"><svg id="svg"></svg><div id="attr"></div>
@@ -168,7 +169,9 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
   <button id="cmp" type="button" aria-label="Show search"><span>&#x1f50d;</span><span id="cmpT">Search a destination</span><span class="e">Edit</span></button>
   <div class="full">
    <div class="r"><input id="q0" autocomplete="off" placeholder="Start (e.g. Dharmapuri)" aria-label="Start" enterkeyhint="go"><button id="gps" title="Use my location" aria-label="Use my location"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.6a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.6"/></svg></button><button id="rst" title="Reset the map"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v4.6H8"/></svg> Reset</button></div>
-   <div class="r"><input id="q" autocomplete="off" placeholder="Destination (e.g. Yercaud)" aria-label="Destination" enterkeyhint="go"><button id="go" class="p">Go</button><button id="mn" aria-label="More options" title="More options"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7" class="f"/><circle cx="12" cy="12" r="1.7" class="f"/><circle cx="19" cy="12" r="1.7" class="f"/></svg></button><button id="hide" aria-label="Hide search" title="Hide search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button></div>
+   <div id="stops"></div>
+    <div class="r"><input id="q" autocomplete="off" placeholder="Destination (e.g. Yercaud)" aria-label="Destination" enterkeyhint="go"><button id="go" class="p">Go</button><button id="mn" aria-label="More options" title="More options"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7" class="f"/><circle cx="12" cy="12" r="1.7" class="f"/><circle cx="19" cy="12" r="1.7" class="f"/></svg></button><button id="hide" aria-label="Hide search" title="Hide search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button></div>
+    <div class="r sbtns"><button id="addStop" type="button">&#xff0b; Add stop</button><button id="swap" type="button" title="Swap start and destination">&#x21c5; Swap</button></div>
    <div class="r" id="opts" hidden>
     <select id="lyr" aria-label="Map type"><option value="map">Map</option><option value="sat">Satellite</option><option value="hyb">Hybrid (roads + names)</option></select>
     <select id="prov" aria-label="Map provider"><option value="osm">Maps: OpenStreetMap</option><option value="tomtom">Maps: TomTom</option></select>
@@ -185,7 +188,7 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
  <div id="toast" hidden></div>
  <div id="tripv" class="page" hidden><div class="pg">
   <div class="card prof" id="profT"></div>
-  <h2>Plan a trip</h2>
+  <div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px"><h2 style="margin:0;flex:1">Plan a trip</h2><button id="seaBtn" class="icb" title="Seasonal trip ideas" aria-label="Seasonal trip ideas">&#x1f326;&#xfe0f;</button></div>
   <div class="card">
    <div class="r"><label class="fld">From date<input type="date" id="tdF"></label><label class="fld">To date<input type="date" id="tdT"></label></div>
    <div class="fld mt">Start place<div class="r"><input id="tS" autocomplete="off" placeholder="e.g. Salem (empty = your location)"><button id="tGps" title="Use my location" aria-label="Use my location"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.6a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.6"/></svg></button></div></div>
@@ -200,7 +203,6 @@ details summary{cursor:pointer;font-size:14px;font-weight:600}
    <div id="tList"></div>
    <button id="tShow" class="p" style="width:100%;position:sticky;bottom:8px;box-shadow:0 2px 10px #0005">Show route on map</button>
   </div>
-  <h2>Seasonal ideas</h2><div class="card" id="seaCard"><div class="chips" id="seaPick" role="group" aria-label="Season"></div><div class="mu" id="seaH" style="margin:10px 0 2px"></div><div id="seaList"></div><button id="seaMore" hidden style="width:100%;margin-top:8px">Show more</button></div>
   <h2>Your trips</h2><div id="tTrips"></div>
   <div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px"><h2 style="margin:0;flex:1">My place suggestions</h2><button id="tSug" class="p"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.6a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.6"/></svg> Suggest a place</button></div><div id="mySug"></div>
  </div></div>
@@ -445,20 +447,22 @@ function osrmLegs(m,p){return osrm(m,p).then(function(r){return r.legs.map(legOb
 function legsFor(m,p){return ttOn()?ttRoute(m,p).catch(function(){return osrmLegs(m,p)}):osrmLegs(m,p)}
 function viaOf(ins,total){var d={};ins.forEach(function(t,k){var nx=ins[k+1],r=(t.roadNumbers&&t.roadNumbers[0])||t.street;if(!r)return;d[r]=(d[r]||0)+Math.max(0,(nx?nx.routeOffsetInMeters:total)-t.routeOffsetInMeters)});
  return Object.keys(d).sort(function(a,b){return d[b]-d[a]}).slice(0,2).join(', ')}
-function ttAlts(a,b,tm){return fj('https://api.tomtom.com/routing/1/calculateRoute/'+a.lat.toFixed(6)+','+a.lng.toFixed(6)+':'+b.lat.toFixed(6)+','+b.lng.toFixed(6)+'/json?travelMode='+(tm||'car')+'&traffic=true&maxAlternatives=2&computeTravelTimeFor=all&sectionType=traffic&routeRepresentation=polyline&instructionsType=text&language=en-GB&'+ttQ(),{},25000)
+function ttAlts(a,b,tm,via){via=via||[];return fj('https://api.tomtom.com/routing/1/calculateRoute/'+[a].concat(via,[b]).map(function(q){return q.lat.toFixed(6)+','+q.lng.toFixed(6)}).join(':')+'/json?travelMode='+(tm||'car')+'&traffic=true&maxAlternatives='+(via.length?0:2)+'&computeTravelTimeFor=all&sectionType=traffic&routeRepresentation=polyline&instructionsType=text&language=en-GB&'+ttQ(),{},25000)
  .then(function(j){var R=(j.routes||[]).map(function(r){var pts=[];(r.legs||[]).forEach(function(l){(l.points||[]).forEach(function(q){pts.push([q.latitude,q.longitude])})});
   var sm=r.summary||{},ins=(r.guidance&&r.guidance.instructions)||[],len=sm.lengthInMeters||0;
-  return {pts:pts,km:len/1000,min:(sm.travelTimeInSeconds||0)/60,delay:(sm.trafficDelayInSeconds||0)/60,free:(sm.noTrafficTravelTimeInSeconds||sm.travelTimeInSeconds||0)/60,via:viaOf(ins,len),src:'tomtom',
+  return {legs:(r.legs||[]).map(function(l){var q=l.summary||{};return {km:(q.lengthInMeters||0)/1000,min:(q.travelTimeInSeconds||0)/60}}),pts:pts,km:len/1000,min:(sm.travelTimeInSeconds||0)/60,delay:(sm.trafficDelayInSeconds||0)/60,free:(sm.noTrafficTravelTimeInSeconds||sm.travelTimeInSeconds||0)/60,via:viaOf(ins,len),src:'tomtom',
    traffic:(r.sections||[]).filter(function(x){return x.sectionType==='TRAFFIC'}).map(function(x){return {i0:x.startPointIndex,i1:x.endPointIndex,m:x.magnitudeOfDelay||0}}),
    steps:ins.map(function(t,k){var mv=String(t.maneuver||''),nx=ins[k+1];return {x:t.message||mv.toLowerCase().replace(/_/g,' '),d:Math.max(0,(nx?nx.routeOffsetInMeters:len)-t.routeOffsetInMeters),y:/ARRIVE/.test(mv)?'arrive':/ROUNDABOUT/.test(mv)?'roundabout':/DEPART/.test(mv)?'depart':'turn',m:ttMod(mv)}})}}).filter(function(r){return r.pts.length>1});
   if(!R.length)throw 'none';return R}).catch(function(e){ttFail(e);throw e})}
-function osrmAlts(a,b){var H=RH.car,c=a.lng.toFixed(6)+','+a.lat.toFixed(6)+';'+b.lng.toFixed(6)+','+b.lat.toFixed(6);
- function go(k){return fj(H[k]+'/route/v1/driving/'+c+'?alternatives=3&overview=false&geometries=geojson&steps=true',{},25000).then(function(j){if(!j.routes||!j.routes.length)throw 0;
-  return j.routes.map(function(r){var o=legObj(r.legs[0]);o.via=r.legs[0].summary||'';o.delay=0;o.free=o.min;o.traffic=[];o.src='osrm';return o})}).catch(function(e){if(k+1<H.length)return go(k+1);throw e})}
+function joinLegs(Ls){var o={pts:[],km:0,min:0,steps:[]};Ls.forEach(function(l,i){o.pts=o.pts.concat(i?l.pts.slice(1):l.pts);o.km+=l.km;o.min+=l.min;o.steps=o.steps.concat(l.steps||[])});o.legs=Ls.map(function(l){return {km:l.km,min:l.min}});return o}
+function osrmAlts(a,b,via){via=via||[];var H=RH.car,c=[a].concat(via,[b]).map(function(q){return q.lng.toFixed(6)+','+q.lat.toFixed(6)}).join(';');
+ function go(k){return fj(H[k]+'/route/v1/driving/'+c+'?alternatives='+(via.length?'false':'3')+'&overview=false&geometries=geojson&steps=true',{},25000).then(function(j){if(!j.routes||!j.routes.length)throw 0;
+  return j.routes.map(function(r){var o=joinLegs(r.legs.map(legObj));o.via=r.legs.map(function(l){return l.summary}).filter(String).join(', ');o.delay=0;o.free=o.min;o.traffic=[];o.src='osrm';return o})}).catch(function(e){if(k+1<H.length)return go(k+1);throw e})}
  return go(0)}
 // start -> destination: up to 3 routes, fastest first (with live traffic when TomTom is on)
-function altRoutes(a,b,tm){return (ttOn()?ttAlts(a,b,tm).catch(function(){return osrmAlts(a,b)}):osrmAlts(a,b)).then(function(L){L.sort(function(x,y){return x.min-y.min});return L})
- .catch(function(){return routeLegs('car',[[a.lat,a.lng],[b.lat,b.lng]],true).then(function(L){if(!L[0])throw 0;var o=L[0];o.delay=0;o.free=o.min;o.traffic=[];o.via='';return [o]})})}
+function altRoutes(a,b,tm){var via=(b.stops||[]).filter(function(q){return q&&isFinite(q.lat)&&isFinite(q.lng)});
+ return (ttOn()?ttAlts(a,b,tm,via).catch(function(){return osrmAlts(a,b,via)}):osrmAlts(a,b,via)).then(function(L){L.sort(function(x,y){return x.min-y.min});return L})
+ .catch(function(){var P=[a].concat(via,[b]).map(function(q){return [q.lat,q.lng]});return routeLegs('car',P,true).then(function(L){if(!L.length||!L.every(Boolean))throw 0;var o=L.length>1?joinLegs(L):L[0];o.delay=0;o.free=o.min;o.traffic=[];o.via='';return [o]})})}
 function mkRoute(L,i){var r={};for(var k in L[i])r[k]=L[i][k];r.alts=L.map(function(x){var c={};for(var k in x)c[k]=x[k];return c});r.sel=i;r.t=Date.now();return r}
 function legRoute(a,b,m){return routeLegs(m,[[a.a,a.o],[b.a,b.o]]).then(function(L){if(!L[0])throw 0;return L[0]})}
 
@@ -571,7 +575,7 @@ function load(d){
  else if(route&&route.pts.length){var pt=route.pts[route.pts.length-1];
   for(var i=0;i<route.pts.length;i++)if(hav(route.pts[i][0],route.pts[i][1],d.lat,d.lng)<=4){pt=route.pts[i];break}
   st={n:'Entering '+d.name,a:pt[0],o:pt[1]}}
- start=st;selected=-1;fit();render();loadFees(d)}
+ start=st;selected=-1;fit();render();loadFees(d);stopsFromTrip(d)}
 
 // ---------- visited ----------
 var viewed={}; // visited places of the trip on the map (saved inside that trip)
@@ -737,7 +741,8 @@ function draw(){
    line(route.pts,RT,AL?5:4,s,dim?.3:(AL?.95:.6),0,!!AL&&!dim);
    if(!dim)(route.traffic||[]).forEach(function(t){var seg=route.pts.slice(t.i0,t.i1+1);if(seg.length>1)line(seg,t.m>=3?'#d93025':t.m===2?'#e8710a':'#f9ab00',5,s,1,0,0)});
    var a0=route.pts[0],ag=el('g',{},og);el('circle',{cx:mx(a0[1]),cy:my(a0[0]),r:11*s,fill:RT,stroke:'#fff','stroke-width':2*s},ag);
-   el('text',{x:mx(a0[1]),y:my(a0[0])+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},ag).textContent='A'}
+   el('text',{x:mx(a0[1]),y:my(a0[0])+4*s,'text-anchor':'middle',fill:'#fff','font-size':11*s,'font-weight':600},ag).textContent='A';
+   (dest&&dest.stops||[]).forEach(function(q,i){var g=el('g',{},og);el('circle',{cx:mx(q.lng),cy:my(q.lat),r:11*s,fill:'#fff',stroke:RT,'stroke-width':3*s},g);el('text',{x:mx(q.lng),y:my(q.lat)+4*s,'text-anchor':'middle',fill:RT,'font-size':11*s,'font-weight':700},g).textContent=String.fromCharCode(66+i)})}
   // visited legs (the leg leading INTO a visited place) in grey, drawn first so the remaining blue route stays on top
   var ND=nDays(dest),offDay=function(i){return dayF>=0&&order[i]&&order[i].day!==dayF};
   if(tour)[true,false].forEach(function(pass){tour.legs.forEach(function(l,i){var v=!!(order[i]&&isV(order[i].p));if(v!==pass)return;var c=v?VC:(ND>1&&order[i]?dayCol(order[i].day):RT),f=offDay(i)?.22:1;
@@ -795,20 +800,23 @@ function pickAlt(k){if(!dest||!route||!route.alts)return;dest.route=mkRoute(rout
 function refreshRoutes(btn){if(!dest||!dest.from)return;btnBusy(btn,true);busyOn();altRoutes(dest.from,dest).then(function(L){if(!L.length)return;var old=route&&route.min;dest.route=mkRoute(L,0);route=dest.route;saveTrip(dest);draw();renderRoutes();
  toast('Updated with live traffic \u2014 fastest is '+fmt(route.min)+(route.via?' via '+route.via:'')+(old&&Math.abs(old-route.min)>=1?' ('+(route.min<old?'-':'+')+fmt(Math.abs(old-route.min))+')':''))}).catch(function(){toast('Could not refresh the route right now')}).then(function(){btnBusy(btn,false);busyOff()})}
 function flowHtml(F){return '<div class="flow">'+F.map(function(f){return '<div class="fl"><span class="ic2">'+f.ic+'</span><div><b>'+esc(f.t)+'</b><small>'+esc(f.s||'')+'</small>'+(f.a?'<a href="'+esc(f.a[1])+'" target="_blank" rel="noopener">'+esc(f.a[0])+' \u2197</a>':'')+'</div></div>'}).join('')+'</div>'}
-function modeFetch(m){var o={a:dest.from.lat,o:dest.from.lng,n:dest.from.name},p={a:dest.lat,o:dest.lng,n:dest.name},key=m+':'+o.a+','+o.o+'>'+p.a+','+p.o;
+function mKey(m){return m+':'+dest.from.lat+','+dest.from.lng+'>'+dest.lat+','+dest.lng+(m==='bike'&&dest.stops&&dest.stops.length?'|'+dest.stops.map(function(q){return q.lat+','+q.lng}).join(';'):'')}
+function modeFetch(m){var o={a:dest.from.lat,o:dest.from.lng,n:dest.from.name},p={a:dest.lat,o:dest.lng,n:dest.name},key=mKey(m);
  if(RC.tr[key])return Promise.resolve(RC.tr[key]);RC.pend=RC.pend||{};if(RC.pend[key])return RC.pend[key];
  var pr=(m==='bike'?altRoutes(dest.from,dest,'motorcycle').then(function(A){if(!A||!A.length)throw 0;return {list:A,sel:0}}).catch(function(){return {err:'No motorbike route found.'}})
   :(m==='train'?trainRes(o,p):busRes(o,p)).catch(function(e){return {err:typeof e==='string'?e:'Not available for this trip.'}}))
   .then(function(r){RC.tr[key]=r;delete RC.pend[key];return r});
  RC.pend[key]=pr;return pr}
-function modeTime(m){if(!dest||!dest.from)return '';if(m==='car')return route?fmt(route.min):'';var c=RC.tr[m+':'+dest.from.lat+','+dest.from.lng+'>'+dest.lat+','+dest.lng];
+function modeTime(m){if(!dest||!dest.from)return '';if(m==='car')return route?fmt(route.min):'';var c=RC.tr[mKey(m)];
  if(!c)return '\u2026';if(c.err)return '\u2014';return c.list?fmt(c.list[0].min):c.dur?fmt(c.dur):''}
-function prefetchModes(){if(!dest||!dest.from||!route||!online())return;var sig=dest.from.lat+','+dest.from.lng+'>'+dest.lat+','+dest.lng;if(RC.pre===sig)return;RC.pre=sig;
+function prefetchModes(){if(!dest||!dest.from||!route||!online())return;var sig=mKey('bike');if(RC.pre===sig)return;RC.pre=sig;
  var d=dest;setTimeout(function(){['train','bus','bike'].reduce(function(pr,m){return pr.then(function(){if(dest!==d||!online())return;return modeFetch(m).then(function(){if(dest===d&&RC.open&&!$('routes').hidden)renderRoutes()})})},Promise.resolve())},700)}
+function legsBox(r){var S=dest.stops||[];if(!S.length||!r.legs||r.legs.length!==S.length+1)return null;var N=[dest.from.name].concat(S.map(function(q){return q.name}),[dest.name]),w=document.createElement('div');w.className='legs';
+ r.legs.forEach(function(l,i){var d=document.createElement('div');d.innerHTML='<span></span><b></b><span class="mu"></span>';d.firstChild.textContent=String.fromCharCode(65+i)+' '+N[i]+' \u2192 '+String.fromCharCode(66+i)+' '+N[i+1];d.children[1].textContent=fmt(l.min);d.children[2].textContent=l.km.toFixed(0)+' km';w.appendChild(d)});return w}
 function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.pts||!$('detail').hidden){B.hidden=true;return}B.hidden=false;
  var AL=route.alts&&route.alts.length?route.alts:[route],tt=trafficTxt(route);
  B.innerHTML='<div class="rh"><div class="sum"></div><button class="rf" title="Refresh with live traffic" aria-label="Refresh with live traffic">'+IC.refresh+'</button><button class="tgl" aria-label="'+(RC.open?'Hide':'Show')+' route options">'+(RC.open?IC.up:IC.down)+'</button></div>'+(RC.open?'<div class="rb"><div class="rm"><button data-m="car">\ud83d\ude97 Car</button><button data-m="train">\ud83d\ude86 Train</button><button data-m="bus">\ud83d\ude8c Bus</button><button data-m="bike">\ud83c\udfcd Bike</button></div><div class="rl"></div></div>':'');
- B.querySelector('.sum').innerHTML='<b>'+esc(dest.from.name)+' \u2192 '+esc(dest.name)+'</b> \u00b7 '+(RC.mode==='car'?'\ud83d\ude97 '+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km':RC.mode==='train'?'\ud83d\ude86 Train':RC.mode==='bike'?'\ud83c\udfcd Bike':'\ud83d\ude8c Bus')+'<small>'+(RC.mode==='car'?esc((route.via?'via '+route.via+' \u00b7 ':'')+tt[1]+' \u00b7 '+AL.length+' route'+(AL.length>1?'s':'')):RC.mode==='bike'?'Two-wheeler routes':'Step-by-step directions')+'</small>';
+ B.querySelector('.sum').innerHTML='<b>'+esc(dest.from.name)+' \u2192 '+esc(dest.name)+'</b> \u00b7 '+(RC.mode==='car'?'\ud83d\ude97 '+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km':RC.mode==='train'?'\ud83d\ude86 Train':RC.mode==='bike'?'\ud83c\udfcd Bike':'\ud83d\ude8c Bus')+'<small>'+(RC.mode==='car'?esc((dest.stops&&dest.stops.length?dest.stops.length+' stop'+(dest.stops.length>1?'s':'')+' \u00b7 ':'')+(route.via?'via '+route.via+' \u00b7 ':'')+tt[1]+(AL.length>1?' \u00b7 '+AL.length+' routes':'')):RC.mode==='bike'?'Two-wheeler routes':'Step-by-step directions')+'</small>';
  B.querySelector('.rh').onclick=function(e){if(e.target.closest('.rf'))return;RC.open=!RC.open;renderRoutes()};
  B.querySelector('.rf').onclick=function(e){e.stopPropagation();refreshRoutes(this)};
  prefetchModes();
@@ -818,8 +826,9 @@ function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.p
  if(RC.mode==='car'){AL.forEach(function(a,k){var t=trafficTxt(a),d=document.createElement('div');d.className='ro'+(k===route.sel?' sel':'');
    d.innerHTML='<div class="t1"><b>'+fmt(a.min)+'</b>'+(k===0&&AL.length>1?'<span class="tg2">Fastest</span>':'')+'<small>'+a.km.toFixed(1)+' km'+(a.via?' \u00b7 via '+esc(a.via):'')+'</small></div><div class="trf '+t[0]+'">'+esc(t[1])+'</div>';
    d.onclick=function(){if(k!==route.sel)pickAlt(k)};L.appendChild(d)});
+  var lb=legsBox(route);if(lb)L.appendChild(lb);
   if(route.src==='tomtom'){var n=document.createElement('div');n.className='mu';n.textContent='Times include live traffic. Orange/red on the blue line = slow traffic. Tap \u21bb before you leave.';L.appendChild(n)}return}
- var key=RC.mode+':'+o.a+','+o.o+'>'+p.a+','+p.o,c=RC.tr[key];
+ var key=mKey(RC.mode),c=RC.tr[key];
  if(RC.mode==='bike'){if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Finding motorbike routes\u2026</div>';
    modeFetch('bike').then(function(){if(RC.mode==='bike')renderRoutes()});return}
   if(c.err){L.textContent=c.err;return}
@@ -830,7 +839,7 @@ function renderRoutes(){var B=$('routes');if(!dest||!dest.from||!route||!route.p
  if(!c){L.innerHTML='<div class="empty"><span class="spin"></span> Working out the '+RC.mode+' journey\u2026</div>';
   var mm=RC.mode;modeFetch(mm).then(function(){if(RC.mode===mm)renderRoutes()});return}
  if(c.err){L.innerHTML='<div class="empty"></div>';L.firstChild.textContent=c.err;return}
- L.innerHTML='<div style="font-weight:600;margin-bottom:6px">About '+fmt(c.dur)+'</div>'+flowHtml(c.flow)+'<div class="mu">'+esc(c.note||'')+'</div>';
+ L.innerHTML='<div style="font-weight:600;margin-bottom:6px">About '+fmt(c.dur)+'</div>'+flowHtml(c.flow)+'<div class="mu">'+esc((c.note||'')+(dest.stops&&dest.stops.length?' Shown for the direct trip \u2014 your stops are not included.':''))+'</div>';
  var sb=document.createElement('button');sb.textContent='Show on map';sb.style.marginTop='8px';sb.onclick=function(){legs=c.segs;fitSegs();draw();if(narrow())sheet('half')};L.appendChild(sb)}
 function renderList(){
  var dy=$('didyou');dy.innerHTML='';if(dest&&dest.q&&dest.alts&&$('detail').hidden)dy.appendChild(didYou(dest,dest.q,function(){$('q').value=dest.q;search()}));
@@ -1000,7 +1009,7 @@ function showDetail(i){
   (r.rows||[]).forEach(function(t){var d=document.createElement('div');d.className='st';d.innerHTML='<span></span><span></span>';d.children[0].textContent=t[0];d.children[1].textContent=t[1];ds.appendChild(d)});
   if(r.note){var n=document.createElement('div');n.style.cssText='font-size:12px;padding-top:6px';n.textContent=r.note;ds.appendChild(n)}}
  Object.keys(MD).forEach(function(m){
-  var b=document.createElement('button');b.textContent=MD[m][0]+' \u2026';b.style.borderColor=MD[m][2];D.querySelector('.md').appendChild(b);chips[m]=b;
+  var b=document.createElement('button');b.innerHTML=esc(MD[m][0])+' <span class="spin"></span>';b.style.borderColor=MD[m][2];D.querySelector('.md').appendChild(b);chips[m]=b;
   b.onclick=function(){if(res[m])pick(m)};
   var job=m==='train'?trainRes(org,p):m==='bus'?busRes(org,p):((m==='car'&&tl&&!tl.straight)?Promise.resolve(tl):legRoute(from,p,m)).then(function(l){return mk(l,from,p,MD[m][2])});
   job.then(function(r){res[m]=r;b.textContent=MD[m][0]+' '+(r.label||fmt(r.dur)+' \u00b7 '+r.dist.toFixed(1)+' km');
@@ -1016,7 +1025,7 @@ function wake(){try{if(navigator.wakeLock)navigator.wakeLock.request('screen').t
 function startTrk(){if(!navigator.geolocation){say('Location is not supported on this device.');return}
  trk.on=true;trk.follow=true;trk.got=0;trk.arr={};
  trk.id=navigator.geolocation.watchPosition(onPos,function(e){$('nav').textContent='Location unavailable: '+(e.message||'allow location access')},{enableHighAccuracy:true,maximumAge:1000,timeout:30000});
- wake();$('nav').hidden=false;$('nav').textContent='Waiting for GPS\u2026';updTrkBtn()}
+ wake();$('nav').hidden=false;$('nav').innerHTML='<span class="spin"></span> Waiting for GPS\u2026';updTrkBtn()}
 
 function stopTrk(){trk.on=false;if(trk.id!=null)navigator.geolocation.clearWatch(trk.id);trk.id=null;
  if(trk.wl){trk.wl.release().catch(function(){});trk.wl=null}$('nav').hidden=true;trk.disp=null;trk.rr=null;updTrkBtn();draw();if(updDist())renderList()}
@@ -1087,43 +1096,75 @@ function prefetch(){var L=lyr(),jobs=[];tileKeys().forEach(function(k){LY[L].for
   function end(){if(fin)return;fin=true;var straight=tour?tour.legs.filter(function(l){return l.straight}).length:0;
    say('Saved \u201c'+dest.name+'\u201d for offline: '+places.length+' places, road route through all of them'+(straight?' (except '+straight+' leg'+(straight>1?'s':'')+')':'')+', and '+(done-fail)+' map tiles ('+$('lyr').selectedOptions[0].textContent+'). Tap \ud83e\udded on the trip to navigate with GPS, even without internet.'+(fail?' '+fail+' tiles failed \u2014 save again on a better network.':''));res()}
   function next(){if(i>=jobs.length){if(!act)end();return}var jb=jobs[i++],q=jb[0].split('/').map(Number);act++;
-   tileBlob(L,jb[1],q[0],q[1],q[2],true).then(function(b){act--;done++;if(!b)fail++;if(done%10===0)say('Saving map for offline\u2026 '+done+'/'+tot);next()})}
+   tileBlob(L,jb[1],q[0],q[1],q[2],true).then(function(b){act--;done++;if(!b)fail++;if(done%10===0){say('Saving map for offline\u2026 '+done+'/'+tot);loader(true,null,'Map tiles '+done+' of '+tot+'\u2026')}next()})}
   if(!tot)end();for(var c=0;c<6;c++)next()})}
 $('save').onclick=function(){
  if(!dest||!places.length){say('Search a destination first.');return}
  if(!online()){say('You are offline. Connect to the internet to save this area.');return}
- var b=this;b.disabled=true;note='';say('Saving the road route through all places\u2026');
- buildTour().then(function(){say('Saving photos and details\u2026');
+ var b=this;b.disabled=true;btnBusy(b,true,'Saving\u2026');busyOn();note='';say('Saving the road route through all places\u2026');loader(true,'Saving \u201c'+dest.name+'\u201d for offline','Saving the road route through all places\u2026');
+ buildTour().then(function(){say('Saving photos and details\u2026');loader(true,null,'Saving photos and details\u2026');
   return Promise.all(active().slice(0,25).map(function(p){return wiki(p.n,dest.name).then(function(o){return Promise.all(o.photos.slice(0,3).map(function(u){return blobURL('img:'+u,u)}))}).catch(function(){})}))})
  .then(function(){var rec={name:dest.name,lat:dest.lat,lng:dest.lng,places:places,sel:dest.sel||null,route:route,from:dest.from||null,det:det,saved:Date.now()};
   return idb('d','readwrite',function(s){s.put(rec,rec.name)})})
- .then(function(){listSaved();say('Saving map tiles\u2026');return prefetch()})
+ .then(function(){listSaved();say('Saving map tiles\u2026');loader(true,null,'Saving map tiles\u2026');return prefetch()})
  .catch(function(){say('Saving is not available in this browser mode (private window?).')})
- .then(function(){b.disabled=false});
+ .then(function(){b.disabled=false;btnBusy(b,false);busyOff();loader(false)});
 };
 
 // ---------- search & controls ----------
 var busy=false;
 function barMin(b){var a=$('q0').value.trim(),d=$('q').value.trim();$('cmpT').textContent=d?(a?a+' \u2192 '+d:d):'Search a destination';$('bar').classList.toggle('min',b);if(b)$('opts').hidden=true}
 $('cmp').onclick=function(){barMin(false)};$('hide').onclick=function(){barMin(true)};
+// ---- stops between start and destination (like Google Maps) ----
+var STP=[];
+function stopSig(){return STP.map(function(x){return x.q.trim()}).filter(String).join('|')}
+function stopsUI(){var B=$('stops');B.innerHTML='';
+ STP.forEach(function(x,i){var r=document.createElement('div');r.className='r stp';
+  r.innerHTML='<span class="sl" aria-hidden="true"></span><input autocomplete="off" enterkeyhint="go"><button class="up" type="button" aria-label="Move stop up" title="Move up">\u2191</button><button class="dn" type="button" aria-label="Move stop down" title="Move down">\u2193</button><button class="x" type="button" aria-label="Remove stop" title="Remove">\u2715</button>';
+  r.querySelector('.sl').textContent=String.fromCharCode(66+i);var inp=r.querySelector('input');inp.value=x.q;inp.placeholder='Stop '+(i+1)+' (e.g. Erode)';inp.setAttribute('aria-label','Stop '+(i+1));
+  inp.oninput=function(){x.q=inp.value;x.p=null};inp.onkeydown=function(e){if(e.key==='Enter')search()};
+  var up=r.querySelector('.up'),dn=r.querySelector('.dn');up.disabled=!i;dn.disabled=i===STP.length-1;
+  up.onclick=function(){STP.splice(i-1,0,STP.splice(i,1)[0]);stopsUI();stopsChanged()};
+  dn.onclick=function(){STP.splice(i+1,0,STP.splice(i,1)[0]);stopsUI();stopsChanged()};
+  r.querySelector('.x').onclick=function(){var had=x.q.trim();STP.splice(i,1);stopsUI();if(had)stopsChanged()};B.appendChild(r)});
+ var ab=$('addStop');ab.disabled=STP.length>=5;ab.title=STP.length>=5?'Up to 5 stops':'Add a stop on the way'}
+function stopsChanged(){if(dest&&dest.from&&!busy&&STP.every(function(x){return x.q.trim()}))reroute()}
+function stopsFromTrip(d){STP=(d&&d.stops||[]).map(function(p){return {q:p.name,p:p}});stopsUI()}
+function geoStops(bias){var L=STP.filter(function(x){return x.q.trim()});
+ return Promise.all(L.map(function(x){if(x.p&&x.p.name===x.q.trim())return x.p;
+  return geocode(x.q.trim(),bias).then(function(r){x.p={name:x.q.trim(),lat:r.lat,lng:r.lng};return x.p},function(){throw 'Could not find the stop \u201c'+x.q.trim()+'\u201d. Check the spelling.'})}))}
+function fitRoute(){if(!route||!route.pts)return;var k=legs;legs=[{pts:route.pts}];fitSegs();legs=k}
+function reroute(){var d=dest;if(!d||!d.from)return;if(!online()){toast('Connect to the internet to change the stops');return}
+ var n=STP.filter(function(x){return x.q.trim()}).length;
+ busy=true;btnBusy($('go'),true);busyOn();loader(true,n?'Adding your stop'+(n>1?'s':''):'Updating the route',d.from.name+' \u2192 '+(n?n+' stop'+(n>1?'s':'')+' \u2192 ':'')+d.name);
+ geoStops({lat:(d.from.lat+d.lat)/2,lng:(d.from.lng+d.lng)/2}).then(function(S){d.stops=S;d.stopSig=stopSig();return altRoutes(d.from,d)})
+ .then(function(L){if(!L.length)throw 'No road route found through these stops.';d.route=mkRoute(L,0);route=d.route;RC.tr={};RC.pend={};RC.pre=null;if(RC.mode!=='car'){RC.mode='car';legs=[]}
+  saveTrip(d);fitRoute();draw();renderList();toast((n?'Route via '+n+' stop'+(n>1?'s':'')+' \u00b7 ':'Stops removed \u00b7 ')+fmt(route.min)+' \u00b7 '+route.km.toFixed(0)+' km')})
+ .catch(function(e){toast(typeof e==='string'?e:'Could not update the route. Try again.')})
+ .then(function(){busy=false;loader(false);btnBusy($('go'),false);busyOff()})}
+$('addStop').onclick=function(){if(STP.length>=5)return;STP.push({q:'',p:null});stopsUI();var I=$('stops').querySelectorAll('input');I[I.length-1].focus()};
+$('swap').onclick=function(){var a=$('q0').value,b=$('q').value;$('q0').value=b;$('q').value=a;STP.reverse();stopsUI();toast('Start and destination swapped \u2014 tap Go')};
+stopsUI();
 function search(){
  if(busy)return;
  var q=$('q').value.trim(),q0=$('q0').value.trim();
+ if(dest&&dest.from&&online()&&(dest.q||'')===q&&(dest.q0||'')===q0&&stopSig()!==(dest.stopSig||'')){reroute();return}
  if(!q&&!gpsPos){say('Enter a destination.');return}
  note='';
  if(!online()){findSaved(q).then(function(d){if(d){note='Offline: opened your saved copy.';openSaved(d)}
   else say('You are offline. Only saved destinations open without internet \u2014 pick one from \u22ef \u2192 Saved offline.')});return}
  busy=true;btnBusy($('go'),true);busyOn();loader(true,'Finding '+(q||'places near you'),'Getting the location\u2026');say('Searching\u2026');var keepItems=$('items').innerHTML;$('items').innerHTML=skel(4);
- var dp=q?geocode(q):Promise.resolve({name:'Near me',lat:gpsPos.lat,lng:gpsPos.lng});
+ var dp=q&&!(q==='My location'&&gpsPos)?geocode(q):Promise.resolve({name:q?'My location':'Near me',lat:gpsPos.lat,lng:gpsPos.lng});
  dp.then(function(d){return ((q0&&q0!=='My location')?geocode(q0,d):Promise.resolve(gpsPos)).then(function(s){return [d,s]})}).then(function(r){
   var d=r[0],s=r[1];say('Finding tourist places in '+d.name+'\u2026');loader(true,'Finding tourist places in '+d.name,'Checking our database first\u2026');
   return fetchPlaces(d.lat,d.lng,+$('rad').value,function(st){loaderSrc(st);$('msg').innerHTML='Finding tourist places in '+esc(d.name)+'\u2026'+srcHtml(st.src)+(st.list.length?'<span class="mu">'+st.list.length+' found so far</span>':'')},{q:q}).then(function(p){
    d.places=p;d.route=null;d.from=s?{name:s.name,lat:s.lat,lng:s.lng}:null;
    if(!s||hav(s.lat,s.lng,d.lat,d.lng)<3)return d;
-   say('Finding the road route\u2026');loader(true,'Planning the road route',(s.name||'Start')+' \u2192 '+d.name);
-   return altRoutes(s,d).then(function(L){if(L.length)d.route=mkRoute(L,0);return d},function(){return d});
+   var ns=STP.filter(function(x){return x.q.trim()}).length;
+   say('Finding the road route\u2026');loader(true,'Planning the road route',(s.name||'Start')+' \u2192 '+(ns?ns+' stop'+(ns>1?'s':'')+' \u2192 ':'')+d.name);
+   return geoStops({lat:(s.lat+d.lat)/2,lng:(s.lng+d.lng)/2}).then(function(S){if(S.length){d.stops=S;d.stopSig=stopSig()}return altRoutes(s,d)}).then(function(L){if(L.length)d.route=mkRoute(L,0);return d},function(e){if(typeof e==='string'&&/stop/.test(e))throw e;return d});
   });
- }).then(function(d){d.sel=null;d.q=q;var fn=farNote(d.from,d);d=mkTrip(d,{draft:true});note=fn;if(partial)note+='OpenStreetMap was busy, so this list may miss some places \u2014 tap Go again later for the full list.';load(d);sheet('half');if(narrow())barMin(true);if(!d.places.length)say('No tourist places found here. Try a bigger radius (\u22ef).')})
+ }).then(function(d){d.sel=null;d.q=q;d.q0=q0;var fn=farNote(d.from,d);d=mkTrip(d,{draft:true});note=fn;if(partial)note+='OpenStreetMap was busy, so this list may miss some places \u2014 tap Go again later for the full list.';load(d);sheet('half');if(narrow())barMin(true);if(!d.places.length)say('No tourist places found here. Try a bigger radius (\u22ef).')})
  .catch(function(e){var m=typeof e==='string'?e:'Search failed. Check your internet connection and tap Go again.';
   return findSaved(q).then(function(sd){if(sd){note=m+' Showing your saved copy.';openSaved(sd)}else say(m+(dest?' (Still showing your previous trip: '+dest.name+'.)':''))})})
  .then(function(){busy=false;loader(false);btnBusy($('go'),false);busyOff();if($('items').querySelector('.sk'))renderList()},function(){busy=false;loader(false);btnBusy($('go'),false);busyOff();renderList()});
@@ -1131,11 +1172,11 @@ function search(){
 $('go').onclick=search;$('q').onkeydown=function(e){if(e.key==='Enter')search()};$('q0').onkeydown=function(e){if(e.key==='Enter')search()};
 $('gps').onclick=function(){
  if(!navigator.geolocation){say('Location is not supported on this device.');return}
- say('Getting your location\u2026');
- navigator.geolocation.getCurrentPosition(function(p){
+ say('Getting your location\u2026');btnBusy($('gps'),true);busyOn();
+ navigator.geolocation.getCurrentPosition(function(p){btnBusy($('gps'),false);busyOff();
   gpsPos={name:'My location',lat:p.coords.latitude,lng:p.coords.longitude};$('q0').value='My location';
   if(!$('q').value.trim())search();else say('Start set to your location. Tap Go.');
- },function(){say('Could not get location. Allow location access, or type a start place.')},{enableHighAccuracy:true,timeout:15000});
+ },function(){btnBusy($('gps'),false);busyOff();say('Could not get location. Allow location access, or type a start place.')},{enableHighAccuracy:true,timeout:15000});
 };
 $('saved').onchange=function(){var n=this.value;this.value='';if(!n)return;note='';
  idb('d','readonly',function(s){return s.get(n)}).then(function(d){if(d){start=null;openSaved(d)}}).catch(function(){})};
@@ -1322,9 +1363,9 @@ function signIn(prompt,hint){var E=$('lgErr');E.textContent='';
  if(!cid()){E.textContent='Google sign-in is not set up for this app yet. You can continue without signing in.';return}
  if(!online()){E.textContent='You are offline. Connect to sign in, or continue without signing in.';return}
  if(!gisReady()){E.textContent='Loading Google sign-in\u2026 tap again in a moment.';loadGIS().catch(function(){E.textContent='Could not load Google sign-in. Check your connection.'});return}
- var was=sess;
- requestTok(prompt,hint).then(gotToken).then(function(){enterApp({adopt:!was||!!was.guest})})
-  .catch(function(e){E.textContent=typeof e==='string'?(/origin|redirect_uri|invalid_client|idpiframe/i.test(e)?'Google rejected this address. Add '+location.origin+' to \u201cAuthorized JavaScript origins\u201d of your OAuth client (step 3).':e):'Google sign-in failed.'})}
+ var was=sess,bb=hint?$('lgBack'):$('gsi');btnBusy(bb,true,'Signing in\u2026');
+ requestTok(prompt,hint).then(gotToken).then(function(){btnBusy(bb,false);enterApp({adopt:!was||!!was.guest})})
+  .catch(function(e){btnBusy(bb,false);E.textContent=typeof e==='string'?(/origin|redirect_uri|invalid_client|idpiframe/i.test(e)?'Google rejected this address. Add '+location.origin+' to \u201cAuthorized JavaScript origins\u201d of your OAuth client (step 3).':e):'Google sign-in failed.'})}
 function gotToken(r){var drive=google.accounts.oauth2.hasGrantedAllScopes(r,DRIVE_SCOPE),tok=r.access_token,exp=Date.now()+(+r.expires_in||3600)*1000;
  return fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+tok}}).then(function(x){if(!x.ok)throw 'Could not read your Google profile.';return x.json()}).then(function(u){
   sess={uid:u.email||u.sub,email:u.email||'',name:u.name||u.email||'',pic:u.picture||'',tok:tok,exp:exp,drive:drive};ls('sess',sess);
@@ -1346,7 +1387,7 @@ function signOut(){uiConfirm('Sign out?','Sign out of '+(sess.email||'your accou
 // ---- backup to the user's own Google Drive (hidden app folder) ----
 var SY={busy:false,again:false,txt:'',t:0,fid:null},syT=0,armed=false;
 function tokValid(){return !!(sess&&!sess.guest&&sess.tok&&Date.now()<sess.exp-60000)}
-function syncTxt(t){SY.txt=t;document.querySelectorAll('.sy').forEach(function(e){e.textContent=(sess&&sess.email?sess.email+' \u00b7 ':'')+t})}
+function syncTxt(t){SY.txt=t;document.querySelectorAll('.sy').forEach(function(e){e.textContent=(sess&&sess.email?sess.email+' \u00b7 ':'')+t;e.classList.toggle('on',/\u2026$/.test(t))})}
 function schedSync(){if(!sess||sess.guest)return;clearTimeout(syT);syT=setTimeout(sync,2500)}
 // Google access tokens last 1 hour. A new one needs a tap (browsers block pop-ups otherwise), so the next tap anywhere renews it silently.
 function refreshTok(now){if(!sess||sess.guest)return;
@@ -1442,8 +1483,8 @@ var DESTS=[
 ['Kaziranga','Assam',26.5775,93.1711,'sw','Wildlife','One-horned rhino safaris (park closes in the monsoon)'],
 ['Havelock Island','Andaman & Nicobar',11.9761,92.9876,'sw','Beach','Clear water for snorkelling and diving']];
 var SEA={k:null,n:10,comm:null};
-function loadSeasonal(){SEA.comm=[];if(!window.burl||!burl()||!online())return;
- fj(burl()+'?action=seasonal',{},12000).then(function(j){if(j&&j.ok){SEA.comm=j.places||[];if(curTab==='trip')renderSeasonal()}}).catch(function(){})}
+function loadSeasonal(){SEA.comm=[];if(!window.burl||!burl()||!online())return Promise.resolve();
+ return fj(burl()+'?action=seasonal',{},12000).then(function(j){if(j&&j.ok){SEA.comm=j.places||[];renderSeasonal()}}).catch(function(){})}
 function renderSeasonal(){var P=$('seaPick');if(!P)return;var now=seasonOf(),k=SEA.k||now,S=sv(k),LT={s:'summer',m:'monsoon',a:'autumn',w:'winter'};
  if(!P.children.length)SEAS.forEach(function(x){var b=document.createElement('button');b.type='button';b.dataset.k=x.k;b.onclick=function(){SEA.k=x.k;SEA.n=10;renderSeasonal()};P.appendChild(b)});
  [].forEach.call(P.children,function(b){var x=sv(b.dataset.k);b.innerHTML=x.ic+' '+x.n+(x.k===now?'<i>now</i>':'')+'<small>'+x.m+'</small>';b.classList.toggle('on',x.k===k);b.setAttribute('aria-pressed',x.k===k)});
@@ -1461,17 +1502,21 @@ function renderSeasonal(){var P=$('seaPick');if(!P)return;var now=seasonOf(),k=S
   d.querySelector('b').textContent=x.n;d.querySelector('.w').textContent=[x.st,x.ty].filter(String).join(' \u00b7 ')+' \u2014 '+x.why;
   d.querySelector('.b').textContent='Best: '+x.s.map(function(q){var z=sv(q);return z?z.n:''}).filter(String).join(', ')+(x.km!=null?' \u00b7 '+(x.km<10?x.km.toFixed(1):Math.round(x.km))+' km away':'');
   function pin(){var q=x.n.toLowerCase().trim();FG[q]={name:x.n,lat:x.a,lng:x.o,label:x.n+(x.st?', '+x.st:'')};return x.n}
-  d.querySelector('.pl').onclick=function(){$('tD').value=pin();var c=$('tD').closest('.card');c.scrollIntoView({behavior:'smooth',block:'center'});c.style.outline='2px solid var(--ac)';setTimeout(function(){c.style.outline=''},1600);
+  d.querySelector('.pl').onclick=function(){closeSea();$('tD').value=pin();var c=$('tD').closest('.card');c.scrollIntoView({behavior:'smooth',block:'center'});c.style.outline='2px solid var(--ac)';setTimeout(function(){c.style.outline=''},1600);
    toast('Destination set to '+x.n+' \u2014 choose dates, then tap \u201cFind tourist places\u201d')};
-  d.querySelector('.mp').onclick=function(){$('q').value=pin();go('map');search()};box.appendChild(d)});
+  d.querySelector('.mp').onclick=function(){closeSea();$('q').value=pin();go('map');search()};box.appendChild(d)});
  if(!L.length)box.innerHTML='<div class="empty">No ideas for this season yet.</div>';
  var mo=$('seaMore');mo.hidden=L.length<=SEA.n;mo.textContent='Show more ('+(L.length-SEA.n)+')';mo.onclick=function(){SEA.n+=10;renderSeasonal()}}
-function renderTripPage(){if(!$('tdF').value){$('tdF').value=today();$('tdT').value=today()}$('tdT').min=$('tdF').value;renderTripsList();renderProf();loadMine();renderSeasonal()}
+function openSea(){if(SEA.comm===null)renderSeasonal();else if(SEA.gps!==gpsPos)renderSeasonal();SEA.gps=gpsPos;$('seaPop').hidden=false;$('seaX').focus()}
+function closeSea(){$('seaPop').hidden=true}
+$('seaBtn').onclick=openSea;$('seaX').onclick=closeSea;$('seaPop').onclick=function(e){if(e.target===this)closeSea()};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('seaPop').hidden)closeSea()});
+function renderTripPage(){if(!$('tdF').value){$('tdF').value=today();$('tdT').value=today()}$('tdT').min=$('tdF').value;renderTripsList();renderProf();loadMine()}
 $('tSug').onclick=function(){startPin()};
 $('tdF').onchange=function(){$('tdT').min=this.value;if(!$('tdT').value||$('tdT').value<this.value)$('tdT').value=this.value};
-$('tGps').onclick=function(){if(!navigator.geolocation){$('tMsg').textContent='Location is not supported on this device.';return}$('tMsg').textContent='Getting your location\u2026';
- navigator.geolocation.getCurrentPosition(function(p){gpsPos={name:'My location',lat:p.coords.latitude,lng:p.coords.longitude};$('tS').value='My location';$('tMsg').textContent=''},
-  function(){$('tMsg').textContent='Could not get your location. Allow location access, or type a start place.'},{enableHighAccuracy:true,timeout:15000})};
+$('tGps').onclick=function(){if(!navigator.geolocation){$('tMsg').textContent='Location is not supported on this device.';return}$('tMsg').innerHTML='<span class="spin"></span> Getting your location\u2026';btnBusy($('tGps'),true);
+ navigator.geolocation.getCurrentPosition(function(p){btnBusy($('tGps'),false);gpsPos={name:'My location',lat:p.coords.latitude,lng:p.coords.longitude};$('tS').value='My location';$('tMsg').textContent=''},
+  function(){btnBusy($('tGps'),false);$('tMsg').textContent='Could not get your location. Allow location access, or type a start place.'},{enableHighAccuracy:true,timeout:15000})};
 $('tFind').onclick=function(){var s=$('tS').value.trim(),d=$('tD').value.trim(),M=$('tMsg'),F=$('tdF').value,T=$('tdT').value;
  if(!F||!T){M.textContent='Choose the From and To dates.';return}if(T<F){M.textContent='\u201cTo date\u201d must be on or after \u201cFrom date\u201d.';return}
  if(!d){M.textContent='Enter a destination.';return}
@@ -1583,7 +1628,7 @@ function pinbar(){var b=$('pinbar');if(!sugMode&&!(pinPt&&pinPt.review)){b.hidde
  b.querySelector('.cl').onclick=function(){sugMode=false;pinPt=null;pinbar();draw()};
  b.querySelector('.me').onclick=function(){var s=b.querySelector('span');
   if(trk.pos){setPin(trk.pos.a,trk.pos.o,trk.pos.acc);return}
-  if(!navigator.geolocation){s.textContent='Location is not supported on this device.';return}s.textContent='Getting your location\u2026';
+  if(!navigator.geolocation){s.textContent='Location is not supported on this device.';return}s.innerHTML='<span class="spin"></span> Getting your location\u2026';
   navigator.geolocation.getCurrentPosition(function(p){setPin(p.coords.latitude,p.coords.longitude,p.coords.accuracy)},function(){s.textContent='Could not get your location. Allow location access, or tap the map.'},{enableHighAccuracy:true,timeout:20000})}}
 function setPin(a,o,acc){pinPt={a:a,o:o,acc:acc||0};var u=upm(a),w=Math.min(vb.w,1500*u),h=w*vb.h/vb.w;vb={x:mx(o)-w/2,y:my(a)-h/2,w:w,h:h};if(trk.on){trk.follow=false;updTrkBtn()}pinbar();draw()}
 function startPin(){if(curTab!=='map')go('map');$('sugv').hidden=true;sugMode=true;if(pinPt&&pinPt.review)pinPt=null;pinbar();draw();if(narrow())sheet('peek')}
@@ -1631,15 +1676,15 @@ $('sgSend').onclick=function(){var M=$('sgMsg'),me=this,own=$('sgOwn').value==='
  if(!sess||sess.guest){showLogin();return}
  if(!SG.files.length&&!SG.noPhotoOk){uiConfirm('Send without photos?','Photos help the admin check the place before it is published.','Send anyway').then(function(ok){if(ok){SG.noPhotoOk=1;me.click()}});return}
  SG.noPhotoOk=0;
- var tk=online()&&burl()?withTok():Promise.resolve(),b=this;b.disabled=true;M.textContent='Preparing photos\u2026';
+ var tk=online()&&burl()?withTok():Promise.resolve(),b=this;btnBusy(b,true,'Sending\u2026');b.disabled=true;M.textContent='';loader(true,'Sending \u201c'+SG.name.trim()+'\u201d',SG.files.length?'Preparing photos\u2026':'Saving the details\u2026');
  Promise.all(SG.files.map(function(f){return (f.type.indexOf('image')===0?shrink(f.file):Promise.resolve(f.file)).then(function(bl){return {name:f.name,type:bl.type||f.type,blob:bl}})}))
  .then(function(files){var item={qid:'q'+Date.now(),req:{name:SG.name.trim(),category:SG.cat,description:SG.desc.trim(),lat:pinPt.a,lng:pinPt.o,fee:fee,ownership:own,season:SG.time.val().season,tod:SG.time.val().tod,tip:SG.time.val().tip},files:files,created:Date.now(),uid:UID};
   function queue(why){return put('q',item.qid,item).then(function(){M.textContent='';done('Saved on this phone \u2014 it will be sent automatically '+why+'.')})}
   if(!online())return queue('when you are back online');
   if(!burl())return queue('once community places are set up');
-  return tk.then(function(){return sendReq(item,function(t){M.textContent=t})}).then(function(){done('Thanks! Your suggestion was sent for review.');loadMine()},
+  loader(true,null,'Sending the details\u2026');return tk.then(function(){return sendReq(item,function(t){loader(true,null,t)})}).then(function(){done('Thanks! Your suggestion was sent for review.');loadMine()},
    function(e){if(/internet|reach|offline|Failed/i.test(String(e)))return queue('when the connection is better');throw e})})
- .catch(function(e){M.textContent=typeof e==='string'?e:'Could not send. Please try again.'}).then(function(){b.disabled=false})};
+ .catch(function(e){M.textContent=typeof e==='string'?e:'Could not send. Please try again.'}).then(function(){loader(false);btnBusy(b,false);b.disabled=false})};
 function done(msg){SG.files.forEach(function(f){URL.revokeObjectURL(f.url)});var fb=SG.fee,tm=SG.time;fb.reset();tm.reset();$('sgOwn').value='public';SG={files:[],name:'',cat:'',desc:'',fee:fb,time:tm};pinPt=null;sugMode=false;$('sugv').hidden=true;pinbar();draw();toast(msg,null,null,6000);renderMine()}
 var qBusy=false;
 function flushQueue(){if(qBusy||!sess||sess.guest||!online()||!burl()||!tokValid())return;qBusy=true;
@@ -1648,8 +1693,9 @@ function flushQueue(){if(qBusy||!sess||sess.guest||!online()||!burl()||!tokValid
   return next()}).then(function(n){if(n){toast(n+' saved suggestion'+(n>1?'s were':' was')+' sent for review');loadMine()}}).catch(function(){}).then(function(){qBusy=false})}
 
 // ---- "My place suggestions" (Trip tab) ----
-function loadMine(){if(!sess||sess.guest||!burl()||!online()||!tokValid()){renderMine();return}
- api('mine').then(function(j){ls('mine:'+UID,j.requests);renderMine()}).catch(function(){renderMine()})}
+function loadMine(){if(!sess||sess.guest||!burl()||!online()||!tokValid()){renderMine();return Promise.resolve()}
+ var bx=$('mySug');if(bx&&!bx.querySelector('.card'))bx.innerHTML=skel(2);
+ return api('mine').then(function(j){ls('mine:'+UID,j.requests);renderMine()}).catch(function(){renderMine()})}
 var ST={pending:['Waiting for review',''],approved:['Added \u2713','g'],rejected:['Not added',''],uploading:['Upload incomplete','']};
 function renderMine(){var box=$('mySug');if(!box)return;
  idb('q','readonly',function(s){return s.getAll()}).catch(function(){return []}).then(function(q){
@@ -1672,9 +1718,9 @@ function renderAdmin(){['pending','approved','rejected','places','db'].forEach(f
  var box=$('adList');box.innerHTML=skel(3);renderProf();
  if(!online()){box.innerHTML='<div class="empty">You are offline. Reviewing needs internet.</div>';return}
  if(!tokValid()){box.innerHTML='<div class="empty">Your sign-in needs a refresh.</div>';var rb=document.createElement('button');rb.className='p';rb.textContent='Refresh sign-in';
-  rb.onclick=function(){withTok().then(renderAdmin).catch(function(e){box.firstChild.textContent=String(e)})};box.appendChild(rb);return}
+  rb.onclick=function(){btnBusy(rb,true,'Refreshing\u2026');withTok().then(renderAdmin).catch(function(e){btnBusy(rb,false);box.firstChild.textContent=String(e)})};box.appendChild(rb);return}
  var st=AD.st;if(st==='db'){renderDb(box);return}
- api('list',{status:st}).then(function(j){if(st!==AD.st)return;box.innerHTML='';
+ return api('list',{status:st}).then(function(j){if(st!==AD.st)return;box.innerHTML='';
   var L=st==='places'?j.places:j.requests;if(!L.length){box.innerHTML='<div class="empty">'+(st==='pending'?'No suggestions waiting for review \ud83c\udf89':'Nothing here yet.')+'</div>';return}
   L.forEach(function(r){box.appendChild(st==='places'?placeCard(r):reqCard(r,st))})})
  .catch(function(e){box.innerHTML='';var d=document.createElement('div');d.className='empty';d.textContent=String(e);box.appendChild(d)})}
@@ -1701,8 +1747,8 @@ function renderDb(box){box.innerHTML='';
    c.querySelector('b').textContent=p.name;c.querySelector('small').textContent=(p.region?p.region+' \u00b7 ':'')+(p.category||'place')+' \u00b7 from '+(SRCL[p.source]||p.source)+(p.active?'':' \u00b7 hidden')+(p.bad?' \u00b7 \u26a0 no valid lat/lng':'');
    c.querySelector('.mp').onclick=function(){showOnMap(p.name,p.lat,p.lng)};
    var tg=c.querySelector('.tg');tg.textContent=p.active?'Hide':'Show';
-   tg.onclick=function(){tg.disabled=true;api('dbSetActive',{id:p.id,active:!p.active}).then(function(){p.active=!p.active;tg.textContent=p.active?'Hide':'Show';tg.disabled=false;
-    c.querySelector('small').textContent=(p.category||'place')+' \u00b7 from '+(SRCL[p.source]||p.source)+(p.active?'':' \u00b7 hidden');ls('_dbch',Date.now())}).catch(function(e){tg.disabled=false;toast(String(e))})};L.appendChild(c)})})
+   tg.onclick=function(){btnBusy(tg,true);tg.disabled=true;api('dbSetActive',{id:p.id,active:!p.active}).then(function(){btnBusy(tg,false);p.active=!p.active;tg.textContent=p.active?'Hide':'Show';tg.disabled=false;
+    c.querySelector('small').textContent=(p.category||'place')+' \u00b7 from '+(SRCL[p.source]||p.source)+(p.active?'':' \u00b7 hidden');ls('_dbch',Date.now())}).catch(function(e){btnBusy(tg,false);tg.disabled=false;toast(String(e))})};L.appendChild(c)})})
   .catch(function(e){L.innerHTML='';cnt.textContent=String(e)})}
  srch.querySelector('.sb').onclick=function(){list(srch.querySelector('.q').value.trim())};srch.querySelector('.q').onkeydown=function(e){if(e.key==='Enter')list(this.value.trim())};
  list('')}
@@ -1741,11 +1787,28 @@ function placeCard(p){var c=document.createElement('div');c.className='card';var
  var bd=c.querySelector('.badge');bd.textContent=on?'Live':'Hidden';if(on)bd.classList.add('g');
  c.querySelector('.mp').onclick=function(){showOnMap(p.name,p.lat,p.lng)};
  var tg=c.querySelector('.tg');tg.textContent=on?'Hide from everyone':'Show again';
- tg.onclick=function(){tg.disabled=true;api('setActive',{id:p.id,active:!on}).then(function(){COMM.t=0;community(true);renderAdmin()}).catch(function(e){tg.disabled=false;toast(String(e))})};return c}
+ tg.onclick=function(){btnBusy(tg,true,on?'Hiding\u2026':'Showing\u2026');tg.disabled=true;api('setActive',{id:p.id,active:!on}).then(function(){COMM.t=0;community(true);renderAdmin()}).catch(function(e){btnBusy(tg,false);tg.disabled=false;toast(String(e))})};return c}
 
 // ---- start ----
+// ---- pull down to refresh (Trip, History, Admin) ----
+function pullRefresh(el,fn){var ind=document.createElement('div');ind.className='ptr';ind.setAttribute('aria-hidden','true');
+ ind.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></svg><span class="spin"></span>';el.insertBefore(ind,el.firstChild);
+ var y0=null,x0=0,dy=0,run=false,ar=ind.querySelector('svg');
+ function set(d){ind.style.transform=d?'translateY('+d+'px)':'';ind.classList.toggle('go',d>=64);ar.style.transform='rotate('+(d>=64?180:0)+'deg)'}
+ el.addEventListener('touchstart',function(e){if(run||el.scrollTop>0||e.touches.length!==1){y0=null;return}y0=e.touches[0].clientY;x0=e.touches[0].clientX;dy=0},{passive:true});
+ el.addEventListener('touchmove',function(e){if(y0==null)return;dy=e.touches[0].clientY-y0;if(el.scrollTop>0||dy<=0||Math.abs(e.touches[0].clientX-x0)>dy){set(0);if(dy<0)y0=null;return}
+  if(e.cancelable)e.preventDefault();ind.style.transition='none';set(Math.min(110,dy*.5))},{passive:false});
+ function end(){if(y0==null)return;y0=null;var d=Math.min(110,dy*.5);ind.style.transition='';if(d<64){set(0);return}
+  run=true;ind.classList.add('run');set(64);var t0=Date.now();
+  Promise.resolve().then(fn).catch(function(){}).then(function(){setTimeout(function(){run=false;ind.classList.remove('run');set(0)},Math.max(0,500-(Date.now()-t0)))})}
+ el.addEventListener('touchend',end);el.addEventListener('touchcancel',end)}
+function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
+pullRefresh($('tripv'),function(){if(online())sync();SEA.comm=null;return Promise.all([loadMine(),loadSeasonal()]).then(function(){renderTripPage();toast('Updated')})});
+pullRefresh($('histv'),function(){if(online())sync();return wait(700).then(function(){renderHist();toast('Updated')})});
+pullRefresh($('admv'),function(){return Promise.resolve(renderAdmin())});
 (function boot(){if(canGoogle()&&online())loadGIS().catch(function(){});
- if(sess&&(sess.guest||sess.uid))enterApp({});else showLogin()})();
+ if(sess&&(sess.guest||sess.uid))enterApp({});else showLogin();
+ setTimeout(function(){try{renderSeasonal();SEA.gps=gpsPos}catch(e){}},1200)})();
 </script>
 </body>
 </html>
